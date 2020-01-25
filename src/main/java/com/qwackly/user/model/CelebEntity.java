@@ -2,15 +2,14 @@ package com.qwackly.user.model;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.stereotype.Component;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "addon_install_state")
+@Table(name = "celebrity")
 public class CelebEntity {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String category;
