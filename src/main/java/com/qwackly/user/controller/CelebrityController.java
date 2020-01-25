@@ -1,17 +1,14 @@
 package com.qwackly.user.controller;
 
-import com.qwackly.user.input.AddCelebDetails;
 import com.qwackly.user.model.CelebEntity;
 import com.qwackly.user.response.CelebApiResponse;
 import com.qwackly.user.service.CelebService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/v1")
@@ -38,8 +35,8 @@ public class CelebrityController {
         return new ResponseEntity<>(celebApiResponse, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/celebs", method = RequestMethod.POST)
-    public void addCelebs(@Valid AddCelebDetails input){
+    @RequestMapping(value = "/celebs", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE )
+    public void addCelebs(@RequestBody CelebEntity input){
         try {
             celebService.addCelebrity(input);
 
