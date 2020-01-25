@@ -1,9 +1,11 @@
 package com.qwackly.user.model;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Table(name = "addon_install_state")
@@ -14,6 +16,9 @@ public class CelebEntity {
     private String category;
     private Integer age;
     private String gender;
+
+    @CreationTimestamp
+    private Date creationdt, lastmodified;
 
     public Integer getId() {
         return id;
@@ -53,6 +58,22 @@ public class CelebEntity {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public Date getCreationdt() {
+        return creationdt;
+    }
+
+    public void setCreationdt(Date creationdt) {
+        this.creationdt = creationdt;
+    }
+
+    public Date getLastmodified() {
+        return lastmodified;
+    }
+
+    public void setLastmodified(Date lastmodified) {
+        this.lastmodified = lastmodified;
     }
 
 }

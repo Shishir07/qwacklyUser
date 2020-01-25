@@ -28,7 +28,7 @@ public class SwaggerConfig extends WebMvcConfigurerAdapter {
     private ApiInfo metaData() {
         return new ApiInfoBuilder()
                 .title("Qwackly REST API Documentation")
-                .description("\"V1 version of Orion\"")
+                .description("\"V1 version of Qwackly\"")
                 .version("1.0.0")
                 .license("Apache License Version 2.0")
                 .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0\"")
