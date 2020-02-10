@@ -14,7 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/v1")
 @RestController
@@ -87,10 +89,13 @@ public class CelebrityController {
             else{
                 CelebTagsEntity celebTagsEntity = celebTagsService.getCelebTagsEntity(tags);
                 Integer[] celebIdList = celebTagsEntity.getCelebirtyList();
-                Integer id = celebTagsEntity.getId();
-                celebIdList = ArrayUtils.add(celebIdList, input.getCelebId());
-                celebTagsEntity.setCelebirtyList(celebIdList);
-                celebTagsService.addNewTags(celebTagsEntity);
+                Integer celebId = input.getCelebId();
+                Optional<Integer> optional = Arrays.stream(celebIdList).filter(x -> x==celebId).findFirst();
+                if(!optional.isPresent()) {
+                    celebIdList = ArrayUtils.add(celebIdList, celebId);
+                    celebTagsEntity.setCelebirtyList(celebIdList);
+                    celebTagsService.addNewTags(celebTagsEntity);
+                }
             }
         }
         catch (Exception e){

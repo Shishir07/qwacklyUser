@@ -11,4 +11,8 @@ public class ListUserResponse extends CommonAPIResponse {
     public void setListOfUsers(List<UserEntity> listOfUsers) {
         this.listOfUsers = listOfUsers;
     }
+
+    public List<UserEntity> getListOfUsers() {
+        return listOfUsers;
+    }
 }

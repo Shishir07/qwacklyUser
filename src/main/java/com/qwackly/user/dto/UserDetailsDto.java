@@ -34,6 +34,7 @@ public class UserDetailsDto implements Serializable {
     }
 
     public UserDetailsDto(UserEntity user){
+        id=user.getId();
         firstName = user.getFirstName();
         secondName = user.getSecondName();
         age = user.getAge();

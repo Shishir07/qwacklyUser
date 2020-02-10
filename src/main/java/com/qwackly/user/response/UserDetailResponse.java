@@ -9,4 +9,9 @@ public class UserDetailResponse extends CommonAPIResponse{
     public void setUserDetails(UserDetailsDto userDetails) {
         this.userDetails = userDetails;
     }
+
+    public UserDetailsDto getUserDetails() {
+        return userDetails;
+    }
+
 }

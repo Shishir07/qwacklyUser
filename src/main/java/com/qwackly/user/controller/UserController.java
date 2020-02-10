@@ -37,8 +37,8 @@ public class UserController {
         return new ResponseEntity<>(listUserResponse, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/users}")
-    public ResponseEntity<UserDetailResponse> getUserDetail(@RequestParam Integer userId){
+    @GetMapping(value = "/users/{id}")
+    public ResponseEntity<UserDetailResponse> getUserDetail(@PathVariable ("id") Integer userId){
 
         UserDetailResponse userDetailResponse = new UserDetailResponse();
         UserDetailsDto userDetails;
