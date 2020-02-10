@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequestMapping("/v1")
 @RestController
@@ -65,7 +66,10 @@ public class CelebrityController {
     public ResponseEntity<CelebTagsApiResponse> getCelebsGivenTags(@RequestParam ("tags") String tags){
         try {
             Integer[] celebIdList =celebTagsService.getCelebTagsEntity(tags).getCelebirtyList();
-            celebTagsApiResponse.setCelebIdList(celebIdList);
+            List<CelebEntity> celebsList = Arrays.stream(celebIdList).map(
+                    x-> celebService.getCelebById(x)
+            ).collect(Collectors.toList());
+            celebTagsApiResponse.setCelebIdList(celebsList);
             celebTagsApiResponse.setStatusCode(HttpStatus.OK.value());
         }
         catch (Exception e){

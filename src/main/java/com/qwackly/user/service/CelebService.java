@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CelebService {
@@ -20,5 +21,17 @@ public class CelebService {
 
     public void addCelebrity(CelebEntity addCelebDetails){
         celebRepository.save(addCelebDetails);
+    }
+
+    public  CelebEntity getCelebById(Integer id){
+        Optional<CelebEntity> optionalCelebEntity = celebRepository.findById(id);
+        CelebEntity celebEntity;
+        if (optionalCelebEntity.isPresent()) {
+            celebEntity = optionalCelebEntity.get();
+        }
+        else {
+            celebEntity  = new CelebEntity();
+        }
+        return celebEntity;
     }
 }

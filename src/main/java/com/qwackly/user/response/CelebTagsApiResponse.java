@@ -1,5 +1,6 @@
 package com.qwackly.user.response;
 
+import com.qwackly.user.model.CelebEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -7,13 +8,13 @@ import java.util.List;
 @Component
 public class CelebTagsApiResponse extends CommonAPIResponse {
 
-    private Integer[] celebIdList;
+    private List<CelebEntity> celebIdList;
 
-    public Integer[] getCelebIdList() {
+    public List<CelebEntity> getCelebIdList() {
         return celebIdList;
     }
 
-    public void setCelebIdList(Integer[] celebIdList) {
+    public void setCelebIdList(List<CelebEntity> celebIdList) {
         this.celebIdList = celebIdList;
     }
 
