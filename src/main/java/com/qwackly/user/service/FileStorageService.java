@@ -1,6 +1,7 @@
 package com.qwackly.user.service;
 
 
+import com.qwackly.user.properties.FileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -20,8 +21,8 @@ public class FileStorageService {
     private final Path fileStorageLocation;
 
     @Autowired
-    public FileStorageService() {
-        this.fileStorageLocation = Paths.get("/Users/abhinav.k/controlpanel")
+    public FileStorageService(FileStorageProperties fileStorageProperties) {
+        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
 
         try {
