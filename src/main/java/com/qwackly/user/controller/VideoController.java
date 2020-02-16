@@ -1,6 +1,8 @@
 package com.qwackly.user.controller;
 
+import com.qwackly.user.handler.MyResourceHttpRequestHandler;
 import com.qwackly.user.model.DBFileEntity;
+import com.qwackly.user.properties.FileStorageProperties;
 import com.qwackly.user.response.UploadFileResponse;
 import com.qwackly.user.service.DBFileStorageService;
 import com.qwackly.user.service.FileStorageService;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -41,6 +44,12 @@ public class VideoController {
 
     @Autowired
     private DBFileStorageService dbFileStorageService;
+
+    @Autowired
+    private MyResourceHttpRequestHandler handler;
+
+    @Autowired
+    private FileStorageProperties fileStorageProperties;
 
 
     @GetMapping("/downloadFile")
@@ -70,7 +79,7 @@ public class VideoController {
         String fileName = fileStorageService.storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
+                .path("/v1/downloadFile/")
                 .path(fileName)
                 .toUriString();
 
@@ -151,6 +160,16 @@ public class VideoController {
                 .contentType(MediaType.parseMediaType(dbFile.getFileType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + dbFile.getFileName() + "\"")
                 .body(new ByteArrayResource(dbFile.getData()));
+    }
+
+    @GetMapping("/videoStream")
+    public void byterange(HttpServletRequest request, HttpServletResponse response, @RequestParam String fileName)
+            throws ServletException, IOException {
+        String fileDir= fileStorageProperties.getUploadDir();
+        File videoFile = new File(fileDir+File.separator+fileName);
+
+        request.setAttribute(MyResourceHttpRequestHandler.ATTR_FILE, videoFile);
+        handler.handleRequest(request, response);
     }
 
 
