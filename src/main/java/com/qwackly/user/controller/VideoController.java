@@ -1,10 +1,13 @@
 package com.qwackly.user.controller;
 
+import com.qwackly.user.model.DBFileEntity;
 import com.qwackly.user.response.UploadFileResponse;
+import com.qwackly.user.service.DBFileStorageService;
 import com.qwackly.user.service.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,6 +39,9 @@ public class VideoController {
     @Autowired
     private FileStorageService fileStorageService;
 
+    @Autowired
+    private DBFileStorageService dbFileStorageService;
+
 
     @GetMapping("/downloadFile")
     public ResponseEntity<Resource> downloadFile(@RequestParam String fileName, HttpServletRequest request) {
@@ -64,7 +70,7 @@ public class VideoController {
         String fileName = fileStorageService.storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/Users/abhinav.k/controlpanel/")
+                .path("/downloadFile/")
                 .path(fileName)
                 .toUriString();
 
@@ -112,4 +118,40 @@ public class VideoController {
         logger.info("steaming response {} ", stream);
         return new ResponseEntity(stream, HttpStatus.OK);
     }
+
+
+
+    @PostMapping("/uploadFileinDB")
+    public UploadFileResponse uploadFileinDB(@RequestParam("file") MultipartFile file) {
+        DBFileEntity dbFile = dbFileStorageService.storeFile(file);
+
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/downloadFileinDB/")
+                .path(dbFile.getId())
+                .toUriString();
+
+        return new UploadFileResponse(dbFile.getFileName(), fileDownloadUri,
+                file.getContentType(), file.getSize());
+    }
+
+    @PostMapping("/uploadMultipleFilesinDB")
+    public List<UploadFileResponse> uploadMultipleFilesinDB(@RequestParam("files") MultipartFile[] files) {
+        return Arrays.asList(files)
+                .stream()
+                .map(file -> uploadFileinDB(file))
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/downloadFileinDB")
+    public ResponseEntity<Resource> downloadFileinDB(@RequestParam String fileId) {
+        // Load file from database
+        DBFileEntity dbFile = dbFileStorageService.getFile(fileId);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(dbFile.getFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + dbFile.getFileName() + "\"")
+                .body(new ByteArrayResource(dbFile.getData()));
+    }
+
+
 }
