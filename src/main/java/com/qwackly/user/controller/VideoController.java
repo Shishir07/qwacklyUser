@@ -163,7 +163,7 @@ public class VideoController {
     }
 
     @GetMapping("/videoStream")
-    public void byterange(HttpServletRequest request, HttpServletResponse response, @RequestParam String fileName)
+    public void videoStream(HttpServletRequest request, HttpServletResponse response, @RequestParam String fileName)
             throws ServletException, IOException {
         String fileDir = fileStorageProperties.getUploadDir();
         File videoFile = fileStorageService.returnFile(fileDir,fileName);
