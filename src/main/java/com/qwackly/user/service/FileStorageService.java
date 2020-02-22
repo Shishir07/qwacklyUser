@@ -8,6 +8,8 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -64,5 +66,12 @@ public class FileStorageService {
         } catch (MalformedURLException ex) {
             throw new RuntimeException("File not found " + fileName, ex);
         }
+    }
+
+    public File returnFile(String dir, String file){
+        if(new File(dir, file).exists())
+            return new File(dir + File.separator + file);
+        else
+            throw new RuntimeException("File not found with the given name : "+file);
     }
 }
