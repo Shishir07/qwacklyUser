@@ -8,6 +8,7 @@ import com.qwackly.user.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepo
 import com.qwackly.user.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.qwackly.user.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -51,6 +52,15 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
         return new TokenAuthenticationFilter();
+    }
+
+    @Bean
+    public FilterRegistrationBean filterRegistrationBean() {
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        TokenAuthenticationFilter tokenAuthenticationFilter = new TokenAuthenticationFilter();
+        filterRegistrationBean.setFilter(tokenAuthenticationFilter);
+        filterRegistrationBean.setEnabled(true);
+        return filterRegistrationBean;
     }
 
     /*

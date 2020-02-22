@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ListOrderResponse extends CommonAPIResponse {
+public class ListOrderResponse {
 
     private List<OrderProductEntity> listOfOrders;
 

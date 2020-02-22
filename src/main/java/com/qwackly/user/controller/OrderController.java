@@ -29,9 +29,6 @@ public class OrderController {
     OrderService orderService;
 
     @Autowired
-    ListOrderResponse listOrderResponse;
-
-    @Autowired
     OrderIdgenerator orderIdgenerator;
 
     @Autowired
@@ -49,18 +46,16 @@ public class OrderController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    ApiResponse apiResponse;
-
     private static final String ADDED = "ADDED";
 
     private static final String PENNDING_PAYMENT = "PENDING_PAYMENT";
 
     private static  Map<String,String> response= new HashMap<>();
 
-    @GetMapping(value = "/users/{userId}/orders/{status}")
+    @RequestMapping(value = "/users/{userId}/orders/{status}" , method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ListOrderResponse> getOrders(@PathVariable Integer userId, @PathVariable String status){
         List<OrderProductEntity> orderList;
+        ListOrderResponse listOrderResponse = new ListOrderResponse();
         try {
             orderList=orderProductService.getAllOrdersByUserAndStatus(userId,status);
             listOrderResponse.setListOfOrders(orderList);
@@ -71,11 +66,12 @@ public class OrderController {
             return new ResponseEntity<>(listOrderResponse,HttpStatus.OK);
     }
 
-    @PostMapping(value = "/users/{userId}/orders")
+    @RequestMapping(value = "/users/{userId}/orders", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse> addOrder(@PathVariable Integer userId, @RequestBody Map<String, Integer> payload){
         UserEntity userEntity= userService.getUserDetails(userId);
         Integer productId = payload.get("productId");
         String orderId;
+        ApiResponse apiResponse = new ApiResponse();
         ProductEntity productEntity=productService.getProduct(productId);
         WishListEntity wishListEntity = wishListService.findByProductEntity(productEntity);
         if(Objects.nonNull(wishListEntity) && !wishListEntity.getStatus().equalsIgnoreCase(ADDED)){
