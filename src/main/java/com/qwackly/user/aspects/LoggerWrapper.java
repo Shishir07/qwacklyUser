@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LoggerWrapper {
-    private static Logger errorLogger = LoggerFactory.getLogger("errorLogger");
+    /*private static Logger errorLogger = LoggerFactory.getLogger("errorLogger");
 
     private static Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
@@ -37,5 +37,5 @@ public class LoggerWrapper {
         errorLogger.error(message+append());
         logger.error(message+append());
         logger.debug(message+append());
-    }
+    }*/
 }

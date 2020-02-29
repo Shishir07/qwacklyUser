@@ -7,7 +7,7 @@ import java.util.Map;
 
 
 public class ObjectStringifier {
-    private static final String CLOSING_SQUARE_BRACE = "]";
+    /*private static final String CLOSING_SQUARE_BRACE = "]";
     private static final String OPENING_SQUARE_BRACE = "[";
     private static final String EQUAL_TO = "=";
     private static final String CLOSING_CURLY_BRACE = "}";
@@ -160,5 +160,5 @@ public class ObjectStringifier {
                 || clazz.equals(Character.class) || clazz.equals(Byte.class) || clazz.equals(Short.class)
                 || clazz.equals(Float.class) || clazz.equals(Double.class) || clazz.equals(Void.class);
     }
-
+*/
 }

@@ -1,25 +1,33 @@
 package com.qwackly.user.controller;
 
 import com.qwackly.user.dto.UserDetailsDto;
+import com.qwackly.user.exceptions.ResourceNotFoundException;
 import com.qwackly.user.model.UserEntity;
+import com.qwackly.user.repository.UserRepository;
 import com.qwackly.user.response.CommonAPIResponse;
 import com.qwackly.user.response.ListUserResponse;
 import com.qwackly.user.response.UserDetailResponse;
 
+import com.qwackly.user.security.CurrentUser;
+import com.qwackly.user.security.UserPrincipal;
 import com.qwackly.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/v1")
+@RequestMapping("")
 @RestController
 public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping(value = "/users")
     public ResponseEntity<ListUserResponse> getUsers(){
@@ -52,6 +60,13 @@ public class UserController {
             userDetailResponse.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         return new ResponseEntity<>(userDetailResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/me")
+    @PreAuthorize("hasRole('USER')")
+    public UserEntity getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
+        return userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
     }
 
 

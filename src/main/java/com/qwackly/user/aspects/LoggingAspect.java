@@ -16,7 +16,7 @@ import java.util.List;
 public class LoggingAspect
 {
 
-    @Autowired
+    /*@Autowired
     private LoggerWrapper logger;
 
     @Pointcut("execution(* com.qwackly.user.*.*.*(..) )")
@@ -75,6 +75,6 @@ public class LoggingAspect
         }
 
         return paramNames.toArray(new String[0]);
-    }
+    }*/
 
 }
