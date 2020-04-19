@@ -1,13 +1,12 @@
 package com.qwackly.user.model;
 
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.lang.reflect.Array;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -20,14 +19,15 @@ public class UserEntity {
     private String secondName;
     private Integer age;
     private String gender;
-    private Date dob;
-    private String contactNumber;
-    private String email;
-    private String country;
+    private String phoneNumber;
+    private String emailId;
     private String state;
-    private String[] preferences;
+
+    @ColumnDefault("false")
+    private boolean isPhoneVerified,isEmailVerified;
+
     @CreationTimestamp
-    private Timestamp creationdt, lastmodified;
+    private Timestamp createdTimestamp, modifiedTimestamp;
 
     public Integer getId() {
         return id;
@@ -69,36 +69,20 @@ public class UserEntity {
         this.gender = gender;
     }
 
-    public Date getDob() {
-        return dob;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setDob(Date dob) {
-        this.dob = dob;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getContactNumber() {
-        return contactNumber;
+    public String getEmailId() {
+        return emailId;
     }
 
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
     }
 
     public String getState() {
@@ -109,11 +93,35 @@ public class UserEntity {
         this.state = state;
     }
 
-    public String[] getPreferences() {
-        return preferences;
+    public Timestamp getCreatedTimestamp() {
+        return createdTimestamp;
     }
 
-    public void setPreferences(String[] preferences) {
-        this.preferences = preferences;
+    public void setCreatedTimestamp(Timestamp createdTimestamp) {
+        this.createdTimestamp = createdTimestamp;
+    }
+
+    public Timestamp getModifiedTimestamp() {
+        return modifiedTimestamp;
+    }
+
+    public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
+        this.modifiedTimestamp = modifiedTimestamp;
+    }
+
+    public boolean isPhoneVerified() {
+        return isPhoneVerified;
+    }
+
+    public void setPhoneVerified(boolean phoneVerified) {
+        isPhoneVerified = phoneVerified;
+    }
+
+    public boolean isEmailVerified() {
+        return isEmailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        isEmailVerified = emailVerified;
     }
 }

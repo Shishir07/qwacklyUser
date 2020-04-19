@@ -1,23 +1,26 @@
 package com.qwackly.user.model;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.stereotype.Component;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "celebrity")
+@Table(name = "celebs")
 public class CelebEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String name;
+    private String firstName;
+    private String lastName;
     private String category;
     private Integer age;
     private String gender;
+    @Column(columnDefinition = "TEXT")
+    private String desciption;
 
     @CreationTimestamp
-    private Date creationdt, lastmodified;
+    private Date createdTimestamp, modifiedTimestamp;
 
     public Integer getId() {
         return id;
@@ -27,12 +30,12 @@ public class CelebEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getCategory() {
@@ -59,20 +62,36 @@ public class CelebEntity {
         this.gender = gender;
     }
 
-    public Date getCreationdt() {
-        return creationdt;
+    public Date getCreatedTimestamp() {
+        return createdTimestamp;
     }
 
-    public void setCreationdt(Date creationdt) {
-        this.creationdt = creationdt;
+    public void setCreatedTimestamp(Date createdTimestamp) {
+        this.createdTimestamp = createdTimestamp;
     }
 
-    public Date getLastmodified() {
-        return lastmodified;
+    public Date getModifiedTimestamp() {
+        return modifiedTimestamp;
     }
 
-    public void setLastmodified(Date lastmodified) {
-        this.lastmodified = lastmodified;
+    public void setModifiedTimestamp(Date modifiedTimestamp) {
+        this.modifiedTimestamp = modifiedTimestamp;
+    }
+
+    public String getDesciption() {
+        return desciption;
+    }
+
+    public void setDesciption(String desciption) {
+        this.desciption = desciption;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
 }

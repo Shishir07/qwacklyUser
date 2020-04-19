@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CelebRepository extends JpaRepository<CelebEntity, Integer> {
     //CelebEntity findById(Integer id);
-    CelebEntity findByName(String name);
+    CelebEntity findByFirstName(String name);
 }

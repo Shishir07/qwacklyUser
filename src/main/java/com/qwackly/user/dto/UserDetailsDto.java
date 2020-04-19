@@ -39,12 +39,9 @@ public class UserDetailsDto implements Serializable {
         secondName = user.getSecondName();
         age = user.getAge();
         gender = user.getGender();
-        dob = user.getDob();
-        contactNumber = user.getContactNumber();
-        email = user.getEmail();
-        country = user.getCountry();
+        contactNumber = user.getPhoneNumber();
+        email = user.getEmailId();
         state = user.getState();
-        preferences = user.getPreferences();
     }
 
     public UserDetailsDto() {
