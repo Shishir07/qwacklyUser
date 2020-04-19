@@ -17,7 +17,7 @@ public class CelebEntity {
     private Integer age;
     private String gender;
     @Column(columnDefinition = "TEXT")
-    private String desciption;
+    private String desrciption;
 
     @CreationTimestamp
     private Date createdTimestamp, modifiedTimestamp;
@@ -78,12 +78,12 @@ public class CelebEntity {
         this.modifiedTimestamp = modifiedTimestamp;
     }
 
-    public String getDesciption() {
-        return desciption;
+    public String getDesrciption() {
+        return desrciption;
     }
 
-    public void setDesciption(String desciption) {
-        this.desciption = desciption;
+    public void setDesrciption(String desrciption) {
+        this.desrciption = desrciption;
     }
 
     public String getLastName() {
