@@ -1,9 +1,11 @@
 package com.qwackly.user.controller;
 
+import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.CelebEntity;
 import com.qwackly.user.response.CelebApiResponse;
 import com.qwackly.user.response.CelebTagsApiResponse;
 import com.qwackly.user.service.CelebService;
+import com.qwackly.user.enums.ResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,8 +24,6 @@ public class CelebrityController {
     @Autowired
     CelebTagsApiResponse celebTagsApiResponse;
 
-   /* @Autowired
-    CelebTagsEntity celebTagsEntity;*/
 
     @RequestMapping(value = "/celebs", method = RequestMethod.GET)
     public ResponseEntity<CelebApiResponse> getCelebs(){
@@ -35,9 +35,7 @@ public class CelebrityController {
            celebApiResponse.setStatusCode(HttpStatus.OK.value());
         }
         catch (Exception e){
-            celebApiResponse=new CelebApiResponse();
-            celebApiResponse.setErrorMessage(e.getMessage());
-            celebApiResponse.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            throw new QwacklyException(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR.value(), ResponseStatus.FAILURE);
         }
         return new ResponseEntity<>(celebApiResponse, HttpStatus.OK);
     }
@@ -48,7 +46,7 @@ public class CelebrityController {
             celebService.addCelebrity(input);
         }
         catch (Exception e){
-            throw new RuntimeException(e);
+            throw new QwacklyException(e.getMessage(), ResponseStatus.FAILURE);
         }
     }
 }

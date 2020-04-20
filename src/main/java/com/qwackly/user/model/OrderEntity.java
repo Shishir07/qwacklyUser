@@ -2,10 +2,7 @@ package com.qwackly.user.model;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
@@ -16,6 +13,10 @@ public class OrderEntity {
     @Column(columnDefinition = "TEXT")
     private String id;
     private String state;
+
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private UserEntity userEntity;
     @CreationTimestamp
     private Timestamp createdTimestamp,modifiedTimestamp;
 
@@ -49,5 +50,13 @@ public class OrderEntity {
 
     public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
         this.modifiedTimestamp = modifiedTimestamp;
+    }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 }

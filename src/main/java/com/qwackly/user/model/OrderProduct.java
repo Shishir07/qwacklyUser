@@ -22,6 +22,12 @@ public class OrderProduct {
     @CreationTimestamp
     private Timestamp createdTimestamp, modifiedTimestamp;
 
+    public OrderProduct(String state,OrderEntity orderEntity,ProductEntity productEntity){
+        this.state=state;
+        this.orderEntity=orderEntity;
+        this.productEntity=productEntity;
+    }
+
     public Integer getId() {
         return id;
     }

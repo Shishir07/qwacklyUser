@@ -3,11 +3,13 @@ package com.qwackly.user.model;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
 
+@Component
 @Entity
 @Table(name = "users")
 public class UserEntity {
