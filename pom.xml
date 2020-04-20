@@ -11,7 +11,6 @@
 	<groupId>com.quackly</groupId>
 	<artifactId>user</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>user</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -95,7 +94,6 @@
             <artifactId>postgresql</artifactId>
             <version>42.0.0</version>
         </dependency>
-
 		<!-- JWT library -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
