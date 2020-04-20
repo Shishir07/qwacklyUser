@@ -62,6 +62,7 @@ public class UserController {
         return new ResponseEntity<>(userDetailResponse, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public UserEntity getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {

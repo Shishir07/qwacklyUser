@@ -27,6 +27,9 @@ public class UserEntity {
     private String email;
     private String country;
     private String state;
+
+
+    private String imageUrl;
     private String[] preferences;
     @JsonIgnore
     private String password;
@@ -149,5 +152,13 @@ public class UserEntity {
 
     public void setProviderId(String providerId) {
         this.providerId = providerId;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

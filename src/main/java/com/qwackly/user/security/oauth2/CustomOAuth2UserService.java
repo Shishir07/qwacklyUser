@@ -68,15 +68,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
         user.setProviderId(oAuth2UserInfo.getId());
-        user.setFirstName(oAuth2UserInfo.getName());
+        user.setFirstName(oAuth2UserInfo.getGivenName());
+        user.setSecondName(oAuth2UserInfo.getFamilyName());
         user.setEmail(oAuth2UserInfo.getEmail());
-       // user.setImageUrl(oAuth2UserInfo.getImageUrl());
+        user.setImageUrl(oAuth2UserInfo.getImageUrl());
         return userRepository.save(user);
     }
 
     private UserEntity updateExistingUser(UserEntity existingUser, OAuth2UserInfo oAuth2UserInfo) {
-        existingUser.setFirstName(oAuth2UserInfo.getName());
-        //existingUser.setImageUrl(oAuth2UserInfo.getImageUrl());
+        existingUser.setFirstName(oAuth2UserInfo.getGivenName());
+        existingUser.setSecondName(oAuth2UserInfo.getFamilyName());
+        existingUser.setEmail(oAuth2UserInfo.getEmail());
+        existingUser.setImageUrl(oAuth2UserInfo.getImageUrl());
         return userRepository.save(existingUser);
     }
 

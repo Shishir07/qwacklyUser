@@ -27,4 +27,16 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
     public String getImageUrl() {
         return (String) attributes.get("picture");
     }
+
+    @Override
+    public String getGivenName() {
+        return (String) attributes.get("given_name");
+        //Improve this
+    };
+
+    @Override
+    public String getFamilyName() {
+        return (String) attributes.get("family_name");
+        //Improve this
+    };
 }
