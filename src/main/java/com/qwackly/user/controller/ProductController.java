@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RequestMapping("/v1")
 @RestController
 public class ProductController {
+
+    public static final String PRODUCT_NOT_FOUND="Product Not Found";
 
     @Autowired
     ProductService productService;
@@ -60,7 +63,10 @@ public class ProductController {
     @RequestMapping(value = "/products", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE )
     public ResponseEntity<ProductEntity> modifyProduct(@RequestBody ProductEntity input){
         try {
-            productService.addProduct(input);
+            if (Objects.nonNull(productService.getProduct(input.getId())))
+                productService.addProduct(input);
+            else
+                throw new QwacklyException(PRODUCT_NOT_FOUND, ResponseStatus.FAILURE);
         }
         catch (Exception e){
             throw new QwacklyException(e.getMessage(), ResponseStatus.FAILURE);

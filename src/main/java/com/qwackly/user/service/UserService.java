@@ -26,15 +26,7 @@ public class UserService {
     }
 
     public UserEntity getUserDetails(Integer id){
-        Optional<UserEntity> optionalUser = userRepository.findById(id);
-        UserDetailsDto userDetails;
-        if (optionalUser.isPresent()) {
-           return optionalUser.get();
-        }
-        else {
-            throw new QwacklyException(USER_NOT_FOUND, HttpStatus.NOT_FOUND.value(), ResponseStatus.FAILURE);
-        }
-
+        return userRepository.findById(id);
     }
 
     public void addUser(UserEntity userDetails){
