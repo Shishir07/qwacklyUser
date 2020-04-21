@@ -98,6 +98,8 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/",
                         "/error",
+                        "/swagger-ui.html",
+                        "/v3/api-docs",
                         "/favicon.ico",
                         "/**/*.png",
                         "/**/*.gif",

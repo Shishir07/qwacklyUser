@@ -46,7 +46,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
 
-        Optional<UserEntity> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
+        Optional<UserEntity> userOptional = userRepository.findByEmailId(oAuth2UserInfo.getEmail());
         UserEntity user;
         if(userOptional.isPresent()) {
             user = userOptional.get();
@@ -70,7 +70,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setProviderId(oAuth2UserInfo.getId());
         user.setFirstName(oAuth2UserInfo.getGivenName());
         user.setSecondName(oAuth2UserInfo.getFamilyName());
-        user.setEmail(oAuth2UserInfo.getEmail());
+        user.setEmailId(oAuth2UserInfo.getEmail());
         user.setImageUrl(oAuth2UserInfo.getImageUrl());
         return userRepository.save(user);
     }
@@ -78,7 +78,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private UserEntity updateExistingUser(UserEntity existingUser, OAuth2UserInfo oAuth2UserInfo) {
         existingUser.setFirstName(oAuth2UserInfo.getGivenName());
         existingUser.setSecondName(oAuth2UserInfo.getFamilyName());
-        existingUser.setEmail(oAuth2UserInfo.getEmail());
+        existingUser.setEmailId(oAuth2UserInfo.getEmail());
         existingUser.setImageUrl(oAuth2UserInfo.getImageUrl());
         return userRepository.save(existingUser);
     }
