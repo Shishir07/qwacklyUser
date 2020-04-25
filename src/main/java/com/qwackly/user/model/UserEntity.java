@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -42,8 +43,6 @@ public class UserEntity {
     @ColumnDefault("false")
     private boolean isPhoneVerified,isEmailVerified;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private Set<UserRolesEntity> roles;
 
 
     @CreationTimestamp
@@ -177,11 +176,11 @@ public class UserEntity {
         this.imageUrl = imageUrl;
     }
 
-    public Set<UserRolesEntity> getRoles() {
+    /*public List<UserRolesEntity> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<UserRolesEntity> roles) {
+    public void setRoles(List<UserRolesEntity> roles) {
         this.roles = roles;
-    }
+    }*/
 }

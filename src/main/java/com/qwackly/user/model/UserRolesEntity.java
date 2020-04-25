@@ -24,7 +24,7 @@ public class UserRolesEntity{
             unique = true, nullable = false)
     private Integer userRoleId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id", nullable = false)
     private UserEntity user;
 

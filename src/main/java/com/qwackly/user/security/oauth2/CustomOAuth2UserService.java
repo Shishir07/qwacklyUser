@@ -10,6 +10,7 @@ import com.qwackly.user.repository.UserRolesRepository;
 import com.qwackly.user.security.UserPrincipal;
 import com.qwackly.user.security.oauth2.user.OAuth2UserInfo;
 import com.qwackly.user.security.oauth2.user.OAuth2UserInfoFactory;
+import com.qwackly.user.service.UserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -31,6 +32,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private UserRepository userRepository;
     @Autowired
     private UserRolesRepository userRolesRepository;
+    @Autowired
+    private UserRoleService userRoleService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
@@ -69,8 +72,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userRoles.setRole("ROLE_USER");
             userRolesRepository.save(userRoles);
         }
-
-        return UserPrincipal.create(user, oAuth2User.getAttributes());
+        List<UserRolesEntity> userRolesEntities=userRoleService.findUserRolesByUser(user);
+        return UserPrincipal.create(user,userRolesEntities, oAuth2User.getAttributes());
     }
 
     private UserEntity registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {

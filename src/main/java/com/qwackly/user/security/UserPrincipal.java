@@ -3,6 +3,8 @@ package com.qwackly.user.security;
 import com.qwackly.user.exceptions.OAuth2AuthenticationProcessingException;
 import com.qwackly.user.model.UserEntity;
 import com.qwackly.user.model.UserRolesEntity;
+import com.qwackly.user.service.UserRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -25,12 +27,12 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserPrincipal create(UserEntity user) {
-        /*List<GrantedAuthority> authorities = Collections.
+
+    public static UserPrincipal create(UserEntity user, List<UserRolesEntity> userRolesEntities) {
+       /* List<GrantedAuthority> authorities = Collections.
                 singletonList(new SimpleGrantedAuthority("ROLE_USER"));*/
 
-
-        List<GrantedAuthority> authorities = getGrantedAuthorities(user.getRoles());
+        List<GrantedAuthority> authorities = getGrantedAuthorities(userRolesEntities);
 
 
         return new UserPrincipal(
@@ -41,7 +43,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         );
     }
 
-    private static List<GrantedAuthority> getGrantedAuthorities(Set<UserRolesEntity> userRoles){
+    private static List<GrantedAuthority> getGrantedAuthorities(List<UserRolesEntity> userRoles){
         Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
 
         // Build user's authorities
@@ -54,9 +56,9 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         return Result;
     }
 
-    public static UserPrincipal create( UserEntity user, Map<String, Object> attributes) {
+    public static UserPrincipal create( UserEntity user,List<UserRolesEntity> userRolesEntities, Map<String, Object> attributes) {
 
-        UserPrincipal userPrincipal = create(user);
+        UserPrincipal userPrincipal = create(user,userRolesEntities);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;
        // throw new OAuth2AuthenticationProcessingException("Problem signing in");
