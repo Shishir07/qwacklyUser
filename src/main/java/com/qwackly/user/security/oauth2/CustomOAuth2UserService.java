@@ -4,13 +4,17 @@ package com.qwackly.user.security.oauth2;
 import com.qwackly.user.exceptions.OAuth2AuthenticationProcessingException;
 import com.qwackly.user.model.AuthProvider;
 import com.qwackly.user.model.UserEntity;
+import com.qwackly.user.model.UserRolesEntity;
 import com.qwackly.user.repository.UserRepository;
+import com.qwackly.user.repository.UserRolesRepository;
 import com.qwackly.user.security.UserPrincipal;
 import com.qwackly.user.security.oauth2.user.OAuth2UserInfo;
 import com.qwackly.user.security.oauth2.user.OAuth2UserInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -18,13 +22,15 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserRolesRepository userRolesRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
@@ -58,6 +64,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user = updateExistingUser(user, oAuth2UserInfo);
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
+            UserRolesEntity userRoles = new UserRolesEntity();
+            userRoles.setUser(user);
+            userRoles.setRole("ROLE_USER");
+            userRolesRepository.save(userRoles);
         }
 
         return UserPrincipal.create(user, oAuth2User.getAttributes());
@@ -65,7 +75,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private UserEntity registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
         UserEntity user = new UserEntity();
-
         user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
         user.setProviderId(oAuth2UserInfo.getId());
         user.setFirstName(oAuth2UserInfo.getGivenName());

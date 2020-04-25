@@ -1,16 +1,15 @@
 package com.qwackly.user.security;
 
+import com.qwackly.user.exceptions.OAuth2AuthenticationProcessingException;
 import com.qwackly.user.model.UserEntity;
+import com.qwackly.user.model.UserRolesEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserPrincipal implements OAuth2User, UserDetails {
     private Integer id;
@@ -27,8 +26,12 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
 
     public static UserPrincipal create(UserEntity user) {
-        List<GrantedAuthority> authorities = Collections.
-                singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        /*List<GrantedAuthority> authorities = Collections.
+                singletonList(new SimpleGrantedAuthority("ROLE_USER"));*/
+
+
+        List<GrantedAuthority> authorities = getGrantedAuthorities(user.getRoles());
+
 
         return new UserPrincipal(
                 user.getId(),
@@ -38,10 +41,25 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         );
     }
 
-    public static UserPrincipal create(UserEntity user, Map<String, Object> attributes) {
-        UserPrincipal userPrincipal = UserPrincipal.create(user);
+    private static List<GrantedAuthority> getGrantedAuthorities(Set<UserRolesEntity> userRoles){
+        Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
+
+        // Build user's authorities
+        for (UserRolesEntity userRole : userRoles) {
+            setAuths.add(new SimpleGrantedAuthority(userRole.getRole()));
+        }
+
+        List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
+
+        return Result;
+    }
+
+    public static UserPrincipal create( UserEntity user, Map<String, Object> attributes) {
+
+        UserPrincipal userPrincipal = create(user);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;
+       // throw new OAuth2AuthenticationProcessingException("Problem signing in");
     }
 
     public Integer getId() {
@@ -93,7 +111,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
 
     public void setAttributes(Map<String, Object> attributes) {
-        this.attributes = attributes;
+        this.attributes = attributes;;
     }
 
     @Override

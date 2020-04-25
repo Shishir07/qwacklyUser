@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import javax.validation.constraints.NotNull;
+
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 @Entity
@@ -28,7 +30,6 @@ public class UserEntity {
 
 
     private String imageUrl;
-    private String[] preferences;
     @JsonIgnore
     private String password;
 
@@ -40,6 +41,10 @@ public class UserEntity {
 
     @ColumnDefault("false")
     private boolean isPhoneVerified,isEmailVerified;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private Set<UserRolesEntity> roles;
+
 
     @CreationTimestamp
     private Timestamp createdTimestamp, modifiedTimestamp;
@@ -170,5 +175,13 @@ public class UserEntity {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Set<UserRolesEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<UserRolesEntity> roles) {
+        this.roles = roles;
     }
 }
