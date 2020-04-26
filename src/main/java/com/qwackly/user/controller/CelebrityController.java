@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RequestMapping("/v1")
@@ -24,7 +27,7 @@ public class CelebrityController {
     @Autowired
     CelebTagsApiResponse celebTagsApiResponse;
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/celebs", method = RequestMethod.GET)
     public ResponseEntity<CelebApiResponse> getCelebs(){
         CelebApiResponse celebApiResponse ;
@@ -40,6 +43,7 @@ public class CelebrityController {
         return new ResponseEntity<>(celebApiResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/celebs", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE )
     public void addCelebs(@RequestBody CelebEntity input){
         try {

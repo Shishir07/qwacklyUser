@@ -1,6 +1,7 @@
 package com.qwackly.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import javax.validation.constraints.NotNull;
@@ -42,7 +43,8 @@ public class UserEntity {
     @ColumnDefault("false")
     private boolean isPhoneVerified,isEmailVerified;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonManagedReference
+    @OneToMany(cascade=CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "user")
     private Set<UserRolesEntity> roles;
 
 

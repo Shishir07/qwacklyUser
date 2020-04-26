@@ -1,6 +1,8 @@
 package com.qwackly.user.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,9 +15,9 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "user_roles", catalog = "test",
+@Table(name = "user_roles",
         uniqueConstraints = @UniqueConstraint(
-                columnNames = { "role", "id" }))
+                columnNames = { "role", "user_id" }))
 public class UserRolesEntity{
 
     @Id
@@ -24,8 +26,9 @@ public class UserRolesEntity{
             unique = true, nullable = false)
     private Integer userRoleId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", nullable = false)
+    @JsonBackReference
+    @ManyToOne()
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     private String role;

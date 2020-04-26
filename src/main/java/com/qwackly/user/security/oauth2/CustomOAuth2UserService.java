@@ -51,7 +51,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if(StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
-
+        Boolean isNewUser = false;
         Optional<UserEntity> userOptional = userRepository.findByEmailId(oAuth2UserInfo.getEmail());
         UserEntity user;
         if(userOptional.isPresent()) {
@@ -63,6 +63,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             }
             user = updateExistingUser(user, oAuth2UserInfo);
         } else {
+            isNewUser = true;
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
             UserRolesEntity userRoles = new UserRolesEntity();
             userRoles.setUser(user);
@@ -70,7 +71,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userRolesRepository.save(userRoles);
         }
 
-        return UserPrincipal.create(user, oAuth2User.getAttributes());
+        return UserPrincipal.create(user, isNewUser, oAuth2User.getAttributes());
     }
 
     private UserEntity registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {

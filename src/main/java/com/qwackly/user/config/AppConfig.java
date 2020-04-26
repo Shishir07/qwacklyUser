@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -28,6 +29,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class AppConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -96,10 +98,8 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
-                .antMatchers("/",
+                .antMatchers(
                         "/error",
-                        "/swagger-ui.html",
-                        "/v3/api-docs",
                         "/favicon.ico",
                         "/**/*.png",
                         "/**/*.gif",
@@ -109,8 +109,9 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/auth/**", "/oauth2/**")
+                .antMatchers("/auth/**", "/oauth2/**", "/swagger-ui.html", "/v3/api-docs")
                 .permitAll()
+                .antMatchers("/v1/products").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

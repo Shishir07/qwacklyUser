@@ -25,10 +25,20 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserPrincipal create(UserEntity user) {
-        /*List<GrantedAuthority> authorities = Collections.
-                singletonList(new SimpleGrantedAuthority("ROLE_USER"));*/
+    public static UserPrincipal createNew(UserEntity user) {
+        List<GrantedAuthority> authorities = Collections.
+                singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
+
+        return new UserPrincipal(
+                user.getId(),
+                user.getEmailId(),
+                user.getPassword(),
+                authorities
+        );
+    }
+
+    public static UserPrincipal create(UserEntity user) {
 
         List<GrantedAuthority> authorities = getGrantedAuthorities(user.getRoles());
 
@@ -54,12 +64,12 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         return Result;
     }
 
-    public static UserPrincipal create( UserEntity user, Map<String, Object> attributes) {
-
-        UserPrincipal userPrincipal = create(user);
+    public static UserPrincipal create( UserEntity user, Boolean isNew, Map<String, Object> attributes) {
+        UserPrincipal userPrincipal;
+        if(isNew) userPrincipal = createNew(user);
+        else userPrincipal = create(user);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;
-       // throw new OAuth2AuthenticationProcessingException("Problem signing in");
     }
 
     public Integer getId() {
