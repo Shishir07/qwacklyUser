@@ -49,5 +49,9 @@ public class OrderService {
         return orderRepository.findByUserEntityAndState(userEntity,status);
     }
 
+    public void deleteOrder(OrderEntity orderEntity){
+        orderRepository.delete(orderEntity);
+    }
+
 
 }

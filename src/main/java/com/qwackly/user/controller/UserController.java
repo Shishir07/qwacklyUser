@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/users/{id}")
-    public ResponseEntity<UserEntity> getUser(@RequestParam Integer id){
+    public ResponseEntity<UserEntity> getUser(@PathVariable Integer id){
 
         UserEntity userEntity;
         try{
@@ -91,7 +91,7 @@ public class UserController {
 
 
     @RequestMapping(value = "/users/{userid}/verify", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<Boolean> verifyUser(@RequestParam Integer userId,@RequestBody String type) {
+    public ResponseEntity<Boolean> verifyUser(@PathVariable Integer userId,@RequestBody String type) {
         UserEntity user;
         try {
             user=userService.getUserDetails(userId);
