@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequestMapping("/v1")
 @RestController
@@ -38,11 +39,12 @@ public class OrderController {
     @Autowired
     OrderProductService orderProductService;
 
+    @Autowired
     OrderProduct orderProduct;
 
 
     @GetMapping(value = "/users/{userid}/orders")
-    public ResponseEntity<ListOrderResponse> getOrders(@RequestParam Integer userId){
+    public ResponseEntity<ListOrderResponse> getOrders(@PathVariable Integer userId){
         List<OrderEntity> orderList;
         try {
             orderList=orderService.getAllOrdersForUser(userId);
@@ -56,7 +58,7 @@ public class OrderController {
     }
 
     @GetMapping(value = "/users/{userid}/cart")
-    public ResponseEntity<ListOrderResponse> getCart(@RequestParam Integer userId){
+    public ResponseEntity<ListOrderResponse> getCart(@PathVariable Integer userId){
         List<OrderEntity> orderList;
         try {
             orderList=orderService.getCartforUser(userId,ADDED_TO_CART);
@@ -87,7 +89,7 @@ public class OrderController {
 
 
     @RequestMapping(value = "/orders/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<OrderEntity> getOrder(@RequestParam String id){
+    public ResponseEntity<OrderEntity> getOrder(@PathVariable String id){
         OrderEntity order;
         try {
             order=orderService.getOrder(id);
@@ -98,8 +100,8 @@ public class OrderController {
         return new ResponseEntity<>(order,HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/cart", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<OrderEntity> addCart(@RequestBody OrderEntity input, @RequestParam Integer productId){
+    @RequestMapping(value = "/addToCart/products/{productId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<OrderEntity> addCart(@RequestBody OrderEntity input, @PathVariable Integer productId){
         String orderId;
         try {
             input.setState(ADDED_TO_CART);
@@ -109,7 +111,7 @@ public class OrderController {
             else
                 orderId=orders.get(0).getId();
             input.setId(orderId);
-            orderProduct=new OrderProduct(ADDED_TO_CART,input,productService.getProduct(productId));
+            setOrderProductEntity(input, productId);
             orderProductService.addOrderProduct(orderProduct);
             orderService.addOrder(input);
         }
@@ -117,6 +119,41 @@ public class OrderController {
             throw new QwacklyException(e.getMessage(), ResponseStatus.FAILURE);
         }
         return new ResponseEntity<>(orderService.getOrder(orderId),HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/deleteFromCart/products/{productId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<OrderEntity> deleteCart(@RequestBody OrderEntity input, @PathVariable Integer productId){
+        String orderId;
+        try {
+            input.setState(ADDED_TO_CART);
+            List<OrderEntity> orders= orderService.getCartforUser(input.getUserEntity().getId(),ADDED_TO_CART);
+            if(orders.size()==0)
+                orderId=orderIdgenerator.getUniqueOrderId();
+            else
+                orderId=orders.get(0).getId();
+            input.setId(orderId);
+            orderProduct=orderProductService.findByOrderandProduct(input,productService.getProduct(productId));
+            orderProductService.deleteOrderProduct(orderProduct);
+            orderService.addOrder(input);
+        }
+        catch (Exception e){
+            throw new QwacklyException(e.getMessage(), ResponseStatus.FAILURE);
+        }
+        return new ResponseEntity<>(orderService.getOrder(orderId),HttpStatus.OK);
+    }
+
+    private void setOrderProductEntity( OrderEntity input,  Integer productId) {
+        orderProduct.setState(ADDED_TO_CART);
+        orderProduct.setProductEntity(productService.getProduct(productId));
+        orderProduct.setOrderEntity(input);
+    }
+
+    public boolean removeCart(String orderId){
+        OrderEntity order= orderService.getOrder(orderId);
+        if(Objects.nonNull(order)){
+            orderService.deleteOrder(order);
+        }
+        return true;
     }
 
 }

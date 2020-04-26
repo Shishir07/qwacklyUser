@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/products/{id}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<ProductEntity> getProduct(@RequestParam Integer id){
+    public ResponseEntity<ProductEntity> getProduct(@PathVariable Integer id){
         ProductEntity productEntity;
         try {
             productEntity= productService.getProduct(id);
