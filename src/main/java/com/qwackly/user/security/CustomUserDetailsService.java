@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -26,7 +27,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email : " + email)
         );
-
         return UserPrincipal.create(user);
     }
 
@@ -35,7 +35,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserEntity user = userRepository.findById(id).orElseThrow(
             () -> new ResourceNotFoundException("User", "id", id)
         );
-
         return UserPrincipal.create(user);
     }
 }
