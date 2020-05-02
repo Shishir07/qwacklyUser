@@ -1,19 +1,24 @@
 package com.qwackly.user.model;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.util.Set;
 
+@Component
 @Entity
 @Table(name = "users")
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String firstName;
     private String secondName;
@@ -23,8 +28,25 @@ public class UserEntity {
     private String emailId;
     private String state;
 
+
+    private String imageUrl;
+    @JsonIgnore
+    private String password;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
+    private String providerId;
+
     @ColumnDefault("false")
     private boolean isPhoneVerified,isEmailVerified;
+
+    @JsonManagedReference
+    @OneToMany(cascade=CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "user")
+    private Set<UserRolesEntity> roles;
+
+
 
     @CreationTimestamp
     private Timestamp createdTimestamp, modifiedTimestamp;
@@ -123,5 +145,45 @@ public class UserEntity {
 
     public void setEmailVerified(boolean emailVerified) {
         isEmailVerified = emailVerified;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public AuthProvider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(AuthProvider provider) {
+        this.provider = provider;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Set<UserRolesEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<UserRolesEntity> roles) {
+        this.roles = roles;
     }
 }

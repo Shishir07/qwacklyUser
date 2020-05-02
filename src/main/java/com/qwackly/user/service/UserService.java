@@ -1,9 +1,13 @@
 package com.qwackly.user.service;
 
 import com.qwackly.user.dto.UserDetailsDto;
+import com.qwackly.user.exception.QwacklyException;
+import com.qwackly.user.exceptions.ResourceNotFoundException;
 import com.qwackly.user.model.UserEntity;
 import com.qwackly.user.repository.UserRepository;
+import com.qwackly.user.enums.ResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +15,8 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
+    public static final String USER_NOT_FOUND="user not found";
 
     @Autowired
     UserRepository userRepository;
@@ -20,18 +26,9 @@ public class UserService {
         return celebs;
     }
 
-    public UserDetailsDto getUserDetails(Integer id){
-        Optional<UserEntity> optionalUser = userRepository.findById(id);
-        UserDetailsDto userDetails;
-        if (optionalUser.isPresent()) {
-            UserEntity user = optionalUser.get();
-            userDetails = new UserDetailsDto(user);
-        }
-        else {
-            userDetails  = new UserDetailsDto();
-        }
-        return userDetails;
-
+    public UserEntity getUserDetails(Integer userId){
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
     }
 
     public void addUser(UserEntity userDetails){

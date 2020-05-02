@@ -1,19 +1,22 @@
 package com.qwackly.user.model;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Component
 @Entity
-@Table(name = "orderProducts")
+@Table(name = "orderProducts", uniqueConstraints = @UniqueConstraint(
+        columnNames = { "orderId", "productId" }))
 public class OrderProduct {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String state;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "orderId")
     private OrderEntity orderEntity;
     @ManyToOne
@@ -21,6 +24,16 @@ public class OrderProduct {
     private ProductEntity productEntity;
     @CreationTimestamp
     private Timestamp createdTimestamp, modifiedTimestamp;
+
+    public OrderProduct(){
+
+    }
+
+    public OrderProduct(String state,OrderEntity orderEntity,ProductEntity productEntity){
+        this.state=state;
+        this.orderEntity=orderEntity;
+        this.productEntity=productEntity;
+    }
 
     public Integer getId() {
         return id;
