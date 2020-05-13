@@ -21,6 +21,7 @@ public class WishListEntity {
     @ManyToOne
     @JoinColumn(name = "productId")
     private ProductEntity productEntity;
+    private String status;
     @CreationTimestamp
     private Timestamp createdTimestamp, modifiedTimestamp;
 
@@ -62,5 +63,13 @@ public class WishListEntity {
 
     public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
         this.modifiedTimestamp = modifiedTimestamp;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
