@@ -16,7 +16,7 @@ public class OrderShipmentEntity {
     private String trackingId;
     @OneToOne
     @JoinColumn(name = "orderProductId")
-    private OrderProduct orderProduct;
+    private OrderProductEntity orderProductEntity;
     @CreationTimestamp
     private Timestamp createdTimestamp, modifiedTimestamp;
 
@@ -44,12 +44,12 @@ public class OrderShipmentEntity {
         this.trackingId = trackingId;
     }
 
-    public OrderProduct getOrderProduct() {
-        return orderProduct;
+    public OrderProductEntity getOrderProductEntity() {
+        return orderProductEntity;
     }
 
-    public void setOrderProduct(OrderProduct orderProduct) {
-        this.orderProduct = orderProduct;
+    public void setOrderProductEntity(OrderProductEntity orderProductEntity) {
+        this.orderProductEntity = orderProductEntity;
     }
 
     public Timestamp getCreatedTimestamp() {

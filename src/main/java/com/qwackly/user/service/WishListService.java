@@ -31,4 +31,8 @@ public class WishListService {
     public WishListEntity getProductForAUser(UserEntity userEntity, ProductEntity productEntity){
         return wishListrepository.findByUserEntityAndProductEntity(userEntity,productEntity);
     }
+
+    public WishListEntity findByProductEntity(ProductEntity productEntity){
+        return wishListrepository.findByProductEntity(productEntity);
+    }
 }

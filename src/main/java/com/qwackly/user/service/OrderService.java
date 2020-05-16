@@ -23,6 +23,9 @@ public class OrderService {
     @Autowired
     UserEntity userEntity;
 
+    @Autowired
+    UserService userService;
+
     public List<OrderEntity> getAllOrders(){
         return orderRepository.findAll();
     }
@@ -40,7 +43,8 @@ public class OrderService {
     }
 
     public List<OrderEntity> getAllOrdersForUser(Integer userId){
-        userEntity.setId(userId);
+        //userEntity.setId(userId);
+        UserEntity userEntity=userService.getUserDetails(userId);
         return orderRepository.findByUserEntity(userEntity);
     }
 

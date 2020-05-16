@@ -20,6 +20,16 @@ public class OrderEntity {
     @CreationTimestamp
     private Timestamp createdTimestamp,modifiedTimestamp;
 
+    public OrderEntity (String id,UserEntity userEntity,String state){
+        this.id=id;
+        this.userEntity=userEntity;
+        this.state=state;
+    }
+
+    public OrderEntity(){
+
+    }
+
     public String getId() {
         return id;
     }

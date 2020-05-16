@@ -37,7 +37,7 @@ public class WishListController {
 
     private static final String ADDED = "ADDED";
 
-    private static final Map<String,String> response= new HashMap<>();
+    private static Map<String,String> response= new HashMap<>();
 
     @RequestMapping(value = "/wishList/{userid}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE )
     public ResponseEntity<List<ProductEntity>> getWishList(@PathVariable Integer userid) {

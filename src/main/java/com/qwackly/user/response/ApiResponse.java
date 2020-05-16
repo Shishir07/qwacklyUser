@@ -1,13 +1,12 @@
 package com.qwackly.user.response;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class ApiResponse {
     private boolean success;
-    private String message;
-
-    public ApiResponse(boolean success, String message) {
-        this.success = success;
-        this.message = message;
-    }
+    private String status;
 
     public boolean isSuccess() {
         return success;
@@ -17,11 +16,11 @@ public class ApiResponse {
         this.success = success;
     }
 
-    public String getMessage() {
-        return message;
+    public String getStatus() {
+        return status;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "orderProducts", uniqueConstraints = @UniqueConstraint(
         columnNames = { "orderId", "productId" }))
-public class OrderProduct {
+public class OrderProductEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,11 +25,11 @@ public class OrderProduct {
     @CreationTimestamp
     private Timestamp createdTimestamp, modifiedTimestamp;
 
-    public OrderProduct(){
+    public OrderProductEntity(){
 
     }
 
-    public OrderProduct(String state,OrderEntity orderEntity,ProductEntity productEntity){
+    public OrderProductEntity(String state, OrderEntity orderEntity, ProductEntity productEntity){
         this.state=state;
         this.orderEntity=orderEntity;
         this.productEntity=productEntity;
