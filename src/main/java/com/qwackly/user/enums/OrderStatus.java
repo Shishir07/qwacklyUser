@@ -1,0 +1,13 @@
+package com.qwackly.user.enums;
+
+public enum OrderStatus {
+    PENDING_PAYMENT,
+    PAYMENT_INITIATED,
+    PAYMENT_COMPLETED,
+    PAYMENT_FAILED,
+    COLLECTED_FROM_CELEB,
+    OUT_FOR_DELIVERY,
+    DELIVERED,
+    REFUND_INITIATED,
+    PAYMENT_REVERSED
+}

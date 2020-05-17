@@ -1,12 +1,24 @@
 package com.qwackly.user.model;
 
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
+@TypeDefs({
+
+        @TypeDef(
+                name = "string-array",
+                typeClass = StringArrayType.class
+        ),
+})
 public class ProductEntity {
 
     @Id
@@ -20,6 +32,10 @@ public class ProductEntity {
     @Column(columnDefinition = "TEXT")
     private String longDescription;
     private Integer price;
+    private String thumbNailImage;
+    @Type(type = "string-array")
+    @Column(columnDefinition = "text[]")
+    private String[] images;
     @CreationTimestamp
     private Timestamp createdTimestamp,modifiedTimestamp;
 
@@ -85,6 +101,22 @@ public class ProductEntity {
 
     public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
         this.modifiedTimestamp = modifiedTimestamp;
+    }
+
+    public String getThumbNailImage() {
+        return thumbNailImage;
+    }
+
+    public void setThumbNailImage(String thumbNailImage) {
+        this.thumbNailImage = thumbNailImage;
+    }
+
+    public String[] getImages() {
+        return images;
+    }
+
+    public void setImages(String[] images) {
+        this.images = images;
     }
 
 }

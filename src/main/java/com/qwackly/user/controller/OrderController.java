@@ -1,5 +1,6 @@
 package com.qwackly.user.controller;
 
+import com.qwackly.user.enums.OrderStatus;
 import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.*;
 import com.qwackly.user.response.ApiResponse;
@@ -57,7 +58,7 @@ public class OrderController {
 
     private static  Map<String,String> response= new HashMap<>();
 
-    @GetMapping(value = "/users/{userid}/orders")
+    @GetMapping(value = "/users/{userId}/orders")
     public ResponseEntity<ListOrderResponse> getOrders(@PathVariable Integer userId){
         List<OrderEntity> orderList;
         try {
@@ -71,7 +72,7 @@ public class OrderController {
             return new ResponseEntity<>(listOrderResponse,HttpStatus.OK);
     }
 
-    @PostMapping(value = "/users/{userid}/orders")
+    @PostMapping(value = "/users/{userId}/orders")
     public ResponseEntity<ApiResponse> addOrder(@PathVariable Integer userId, @RequestBody Map<String, Object> payload){
         UserEntity userEntity= userService.getUserDetails(userId);
         ProductEntity productEntity=productService.getProduct((Integer) payload.get("productId"));
@@ -80,11 +81,11 @@ public class OrderController {
             throw new QwacklyException("Product IS Not Available currently",ResponseStatus.FAILURE);
         }
         String orderId=orderIdgenerator.getUniqueOrderId();
-        OrderEntity orderEntity = new OrderEntity(orderId,userEntity,PENNDING_PAYMENT);
+        OrderEntity orderEntity = new OrderEntity(orderId,userEntity, OrderStatus.PENDING_PAYMENT);
         OrderProductEntity orderProductEntity= new OrderProductEntity(PENNDING_PAYMENT,orderEntity,productEntity);
         try{
-            orderService.addOrder(orderEntity);
             orderProductService.addOrderProduct(orderProductEntity);
+            orderService.addOrder(orderEntity);
         }
         catch (Exception e){
             throw new QwacklyException(e.getMessage(),ResponseStatus.FAILURE);

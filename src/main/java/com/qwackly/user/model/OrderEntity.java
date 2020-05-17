@@ -1,5 +1,6 @@
 package com.qwackly.user.model;
 
+import com.qwackly.user.enums.OrderStatus;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -12,7 +13,10 @@ public class OrderEntity {
     @Id
     @Column(columnDefinition = "TEXT")
     private String id;
-    private String state;
+
+    @Column(name = "state", nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private OrderStatus state;
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -20,7 +24,7 @@ public class OrderEntity {
     @CreationTimestamp
     private Timestamp createdTimestamp,modifiedTimestamp;
 
-    public OrderEntity (String id,UserEntity userEntity,String state){
+    public OrderEntity (String id,UserEntity userEntity,OrderStatus state){
         this.id=id;
         this.userEntity=userEntity;
         this.state=state;
@@ -38,11 +42,11 @@ public class OrderEntity {
         this.id = id;
     }
 
-    public String getState() {
+    public OrderStatus getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(OrderStatus state) {
         this.state = state;
     }
 

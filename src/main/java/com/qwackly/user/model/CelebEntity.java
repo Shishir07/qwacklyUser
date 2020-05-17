@@ -18,6 +18,7 @@ public class CelebEntity {
     private String gender;
     @Column(columnDefinition = "TEXT")
     private String desrciption;
+    private String thumbNailImage;
 
     @CreationTimestamp
     private Date createdTimestamp, modifiedTimestamp;
@@ -92,6 +93,14 @@ public class CelebEntity {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getThumbNailImage() {
+        return thumbNailImage;
+    }
+
+    public void setThumbNailImage(String thumbNailImage) {
+        this.thumbNailImage = thumbNailImage;
     }
 
 }
