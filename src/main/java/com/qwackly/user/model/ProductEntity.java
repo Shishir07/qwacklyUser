@@ -1,12 +1,17 @@
 package com.qwackly.user.model;
 
+import com.qwackly.user.util.Images;
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import com.vladmihalcea.hibernate.type.json.JsonNodeStringType;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import org.apache.commons.lang3.SerializationUtils;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -14,10 +19,9 @@ import java.util.List;
 @Table(name = "products")
 @TypeDefs({
 
-        @TypeDef(
-                name = "string-array",
-                typeClass = StringArrayType.class
-        ),
+        @TypeDef(name = "string-array", typeClass = StringArrayType.class),
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class)
 })
 public class ProductEntity {
 
@@ -33,9 +37,10 @@ public class ProductEntity {
     private String longDescription;
     private Integer price;
     private String thumbNailImage;
-    @Type(type = "string-array")
-    @Column(columnDefinition = "text[]")
-    private String[] images;
+
+    @Type(type = "serializable")
+    private List<Images> images;
+
     @CreationTimestamp
     private Timestamp createdTimestamp,modifiedTimestamp;
 
@@ -111,12 +116,11 @@ public class ProductEntity {
         this.thumbNailImage = thumbNailImage;
     }
 
-    public String[] getImages() {
+    public List<Images> getImages() {
         return images;
     }
 
-    public void setImages(String[] images) {
+    public void setImages(List<Images> images) {
         this.images = images;
     }
-
 }
