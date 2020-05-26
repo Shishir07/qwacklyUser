@@ -35,4 +35,8 @@ public class WishListService {
     public WishListEntity findByProductEntity(ProductEntity productEntity){
         return wishListrepository.findByProductEntity(productEntity);
     }
+
+    public boolean ifProductIsWishedByUser(ProductEntity productEntity,UserEntity userEntity){
+        return wishListrepository.existsByProductEntityAndUserEntity(productEntity,userEntity);
+    }
 }

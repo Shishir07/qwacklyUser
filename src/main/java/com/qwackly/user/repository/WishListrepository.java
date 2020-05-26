@@ -17,6 +17,7 @@ public interface WishListrepository extends JpaRepository<WishListEntity, Intege
     List<WishListEntity> findByUserEntity(UserEntity userEntity);
     WishListEntity findByUserEntityAndProductEntity(UserEntity userEntity, ProductEntity productEntity);
     WishListEntity findByProductEntity(ProductEntity productEntity);
+    boolean existsByProductEntityAndUserEntity(ProductEntity productEntity,UserEntity userEntity);
 
     @Modifying
     @Transactional

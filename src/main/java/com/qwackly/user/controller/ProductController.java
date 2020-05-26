@@ -4,7 +4,12 @@ import com.qwackly.user.enums.ResponseStatus;
 import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.OrderEntity;
 import com.qwackly.user.model.ProductEntity;
+import com.qwackly.user.model.UserEntity;
+import com.qwackly.user.model.WishListEntity;
 import com.qwackly.user.service.ProductService;
+import com.qwackly.user.service.UserService;
+import com.qwackly.user.service.WishListService;
+import com.qwackly.user.util.WishListProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,6 +30,14 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
+    @Autowired
+    WishListService wishListService;
+
+    @Autowired
+    UserService userService;
+
+    public static final String ADDED = "ADDED";
+
     List<ProductEntity> productEntities ;
 
     @RequestMapping(value = "/products", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE )
@@ -36,6 +49,30 @@ public class ProductController {
             throw new QwacklyException(e.getMessage(), ResponseStatus.FAILURE);
         }
         return new ResponseEntity<>(productEntities, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/products/users/{id}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<List<WishListProduct>> getProductsforAUser(@PathVariable Integer id){
+        List<WishListProduct> wishListProducts = new ArrayList<>();
+        try {
+            productEntities=productService.getAllProducts();
+
+            for (ProductEntity productEntity: productEntities){
+                WishListProduct wishListProduct = new WishListProduct();
+                UserEntity userEntity= userService.getUserDetails(id);
+                boolean isWished = false;
+                if (wishListService.ifProductIsWishedByUser(productEntity,userEntity)){
+                    isWished=true;
+                }
+                wishListProduct.setWished(isWished);
+                wishListProduct.setProductEntity(productEntity);
+                wishListProducts.add(wishListProduct);
+            }
+        }
+        catch (Exception e){
+            throw new QwacklyException(e.getMessage(), ResponseStatus.FAILURE);
+        }
+        return new ResponseEntity<>(wishListProducts, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
