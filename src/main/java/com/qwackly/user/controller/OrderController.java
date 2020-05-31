@@ -77,7 +77,7 @@ public class OrderController {
         UserEntity userEntity= userService.getUserDetails(userId);
         ProductEntity productEntity=productService.getProduct((Integer) payload.get("productId"));
         WishListEntity wishListEntity = wishListService.findByProductEntity(productEntity);
-        if(Objects.isNull(wishListEntity) || !wishListEntity.getStatus().equalsIgnoreCase(ADDED)){
+        if(Objects.nonNull(wishListEntity) && !wishListEntity.getStatus().equalsIgnoreCase(ADDED)){
             throw new QwacklyException("Product IS Not Available currently",ResponseStatus.FAILURE);
         }
         String orderId=orderIdgenerator.getUniqueOrderId();
@@ -92,6 +92,7 @@ public class OrderController {
         }
         apiResponse.setSuccess(true);
         apiResponse.setStatus("SUCCESS");
+        apiResponse.setOrderId(orderId);
         return new ResponseEntity<>(apiResponse,HttpStatus.OK);
     }
 
