@@ -60,11 +60,10 @@ public class OrderController {
 
     @GetMapping(value = "/users/{userId}/orders")
     public ResponseEntity<ListOrderResponse> getOrders(@PathVariable Integer userId){
-        List<OrderEntity> orderList;
+        List<OrderProductEntity> orderList;
         try {
-            orderList=orderService.getAllOrdersForUser(userId);
+            orderList=orderProductService.getAllOrdersForUser(userId);
             listOrderResponse.setListOfOrders(orderList);
-            listOrderResponse.setStatusCode(HttpStatus.OK.value());
         }
         catch (Exception e){
             throw new QwacklyException(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR.value(), ResponseStatus.FAILURE);
