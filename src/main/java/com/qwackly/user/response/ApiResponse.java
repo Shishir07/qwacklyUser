@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 public class ApiResponse {
     private boolean success;
     private String status;
+    private String orderId;
 
     public boolean isSuccess() {
         return success;
@@ -22,5 +23,13 @@ public class ApiResponse {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 }

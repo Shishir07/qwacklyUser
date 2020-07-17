@@ -2,6 +2,7 @@ package com.qwackly.user.service;
 
 import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.OrderEntity;
+import com.qwackly.user.model.ProductEntity;
 import com.qwackly.user.model.UserEntity;
 import com.qwackly.user.repository.OrderRepository;
 import com.qwackly.user.enums.ResponseStatus;
@@ -55,6 +56,10 @@ public class OrderService {
 
     public void deleteOrder(OrderEntity orderEntity){
         orderRepository.delete(orderEntity);
+    }
+
+    public OrderEntity findByProductIdIdAndUseId(Integer productid, Integer userId){
+        return orderRepository.findByProductIdIdAndUseId(productid,userId);
     }
 
 

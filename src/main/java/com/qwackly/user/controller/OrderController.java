@@ -60,11 +60,10 @@ public class OrderController {
 
     @GetMapping(value = "/users/{userId}/orders")
     public ResponseEntity<ListOrderResponse> getOrders(@PathVariable Integer userId){
-        List<OrderEntity> orderList;
+        List<OrderProductEntity> orderList;
         try {
-            orderList=orderService.getAllOrdersForUser(userId);
+            orderList=orderProductService.getAllOrdersForUser(userId);
             listOrderResponse.setListOfOrders(orderList);
-            listOrderResponse.setStatusCode(HttpStatus.OK.value());
         }
         catch (Exception e){
             throw new QwacklyException(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR.value(), ResponseStatus.FAILURE);
@@ -75,23 +74,31 @@ public class OrderController {
     @PostMapping(value = "/users/{userId}/orders")
     public ResponseEntity<ApiResponse> addOrder(@PathVariable Integer userId, @RequestBody Map<String, Object> payload){
         UserEntity userEntity= userService.getUserDetails(userId);
-        ProductEntity productEntity=productService.getProduct((Integer) payload.get("productId"));
+        Integer productId = (Integer) payload.get("productId");
+        String orderId;
+        ProductEntity productEntity=productService.getProduct(productId);
         WishListEntity wishListEntity = wishListService.findByProductEntity(productEntity);
-        if(Objects.isNull(wishListEntity) || !wishListEntity.getStatus().equalsIgnoreCase(ADDED)){
+        if(Objects.nonNull(wishListEntity) && !wishListEntity.getStatus().equalsIgnoreCase(ADDED)){
             throw new QwacklyException("Product IS Not Available currently",ResponseStatus.FAILURE);
         }
-        String orderId=orderIdgenerator.getUniqueOrderId();
-        OrderEntity orderEntity = new OrderEntity(orderId,userEntity, OrderStatus.PENDING_PAYMENT);
-        OrderProductEntity orderProductEntity= new OrderProductEntity(PENNDING_PAYMENT,orderEntity,productEntity);
-        try{
-            orderProductService.addOrderProduct(orderProductEntity);
-            orderService.addOrder(orderEntity);
+        OrderEntity order = orderService.findByProductIdIdAndUseId(productId,userId);
+        if(Objects.nonNull(order)){
+            orderId= order.getId();
         }
-        catch (Exception e){
-            throw new QwacklyException(e.getMessage(),ResponseStatus.FAILURE);
+        else {
+            orderId = orderIdgenerator.getUniqueOrderId();
+            OrderEntity orderEntity = new OrderEntity(orderId, userEntity, OrderStatus.PENDING_PAYMENT);
+            OrderProductEntity orderProductEntity = new OrderProductEntity(PENNDING_PAYMENT, orderEntity, productEntity);
+            try {
+                orderProductService.addOrderProduct(orderProductEntity);
+                orderService.addOrder(orderEntity);
+            } catch (Exception e) {
+                throw new QwacklyException(e.getMessage(), ResponseStatus.FAILURE);
+            }
         }
         apiResponse.setSuccess(true);
         apiResponse.setStatus("SUCCESS");
+        apiResponse.setOrderId(orderId);
         return new ResponseEntity<>(apiResponse,HttpStatus.OK);
     }
 
