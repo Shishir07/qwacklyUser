@@ -3,7 +3,7 @@ package com.qwackly.user.request;
 public class PaymentRequest {
 
     private String orderId;
-    private Integer productId;
+    private String orderAmount;
     private String customerName;
     private String customerEmail;
     private String customerPhone;
@@ -14,6 +14,14 @@ public class PaymentRequest {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public String getOrderAmount() {
+        return orderAmount;
+    }
+
+    public void setOrderAmount(String orderAmount) {
+        this.orderAmount = orderAmount;
     }
 
     public String getCustomerName() {
@@ -38,13 +46,5 @@ public class PaymentRequest {
 
     public void setCustomerPhone(String customerPhone) {
         this.customerPhone = customerPhone;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
     }
 }

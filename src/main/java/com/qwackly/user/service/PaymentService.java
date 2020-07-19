@@ -46,11 +46,9 @@ public class PaymentService {
 
     public String getSignature(PaymentRequest paymentRequest) throws NoSuchAlgorithmException, InvalidKeyException {
         Map<String, String> postData = new HashMap<>();
-        ProductEntity productEntity = productService.getProduct(paymentRequest.getProductId());
-        Integer orderAmount = productEntity.getPrice();
         postData.put("appId", appId);
         postData.put("orderId", paymentRequest.getOrderId());
-        postData.put("orderAmount", String.valueOf(orderAmount));
+        postData.put("orderAmount", String.valueOf(paymentRequest.getOrderAmount()));
         postData.put("orderCurrency", "INR");
         postData.put("orderNote", "Qwackly Payments");
         postData.put("customerName", paymentRequest.getCustomerName());
@@ -72,11 +70,9 @@ public class PaymentService {
 
     public HttpEntity<MultiValueMap<String, String>> getPayload(@RequestBody PaymentRequest paymentRequest, String signature) {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        ProductEntity productEntity = productService.getProduct(paymentRequest.getProductId());
-        Integer orderAmount = productEntity.getPrice();
         map.add("appId", appId);
         map.add("orderId", paymentRequest.getOrderId());
-        map.add("orderAmount", String.valueOf(orderAmount));
+        map.add("orderAmount", String.valueOf(paymentRequest.getOrderAmount()));
         map.add("orderCurrency", "INR");
         map.add("orderNote", "Qwackly Payments");
         map.add("customerName", paymentRequest.getCustomerName());
