@@ -72,9 +72,9 @@ public class OrderController {
     }
 
     @PostMapping(value = "/users/{userId}/orders")
-    public ResponseEntity<ApiResponse> addOrder(@PathVariable Integer userId, @RequestBody Map<String, Object> payload){
+    public ResponseEntity<ApiResponse> addOrder(@PathVariable Integer userId, @RequestBody Map<String, Integer> payload){
         UserEntity userEntity= userService.getUserDetails(userId);
-        Integer productId = (Integer) payload.get("productId");
+        Integer productId = payload.get("productId");
         String orderId;
         ProductEntity productEntity=productService.getProduct(productId);
         WishListEntity wishListEntity = wishListService.findByProductEntity(productEntity);
