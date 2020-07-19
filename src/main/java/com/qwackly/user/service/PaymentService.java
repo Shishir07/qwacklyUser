@@ -2,6 +2,7 @@ package com.qwackly.user.service;
 
 import com.qwackly.user.model.OrderEntity;
 import com.qwackly.user.model.PaymentEntity;
+import com.qwackly.user.model.ProductEntity;
 import com.qwackly.user.repository.PaymentRepository;
 import com.qwackly.user.request.PaymentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +41,16 @@ public class PaymentService {
     @Autowired
     OrderService orderService;
 
+    @Autowired
+    ProductService productService;
+
     public String getSignature(PaymentRequest paymentRequest) throws NoSuchAlgorithmException, InvalidKeyException {
         Map<String, String> postData = new HashMap<>();
         postData.put("appId", appId);
         postData.put("orderId", paymentRequest.getOrderId());
-        postData.put("orderAmount", paymentRequest.getOrderAmount());
-        postData.put("orderCurrency", paymentRequest.getOrderCurrency());
-        postData.put("orderNote", paymentRequest.getOrderNote());
+        postData.put("orderAmount", String.valueOf(paymentRequest.getOrderAmount()));
+        postData.put("orderCurrency", "INR");
+        postData.put("orderNote", "Qwackly Payments");
         postData.put("customerName", paymentRequest.getCustomerName());
         postData.put("customerEmail", paymentRequest.getCustomerEmail());
         postData.put("customerPhone", paymentRequest.getCustomerPhone());
@@ -68,9 +72,9 @@ public class PaymentService {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("appId", appId);
         map.add("orderId", paymentRequest.getOrderId());
-        map.add("orderAmount", paymentRequest.getOrderAmount());
-        map.add("orderCurrency", paymentRequest.getOrderCurrency());
-        map.add("orderNote", paymentRequest.getOrderNote());
+        map.add("orderAmount", String.valueOf(paymentRequest.getOrderAmount()));
+        map.add("orderCurrency", "INR");
+        map.add("orderNote", "Qwackly Payments");
         map.add("customerName", paymentRequest.getCustomerName());
         map.add("customerEmail", paymentRequest.getCustomerEmail());
         map.add("customerPhone", paymentRequest.getCustomerPhone());

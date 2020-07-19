@@ -4,8 +4,6 @@ public class PaymentRequest {
 
     private String orderId;
     private String orderAmount;
-    private String orderCurrency;
-    private String orderNote;
     private String customerName;
     private String customerEmail;
     private String customerPhone;
@@ -24,22 +22,6 @@ public class PaymentRequest {
 
     public void setOrderAmount(String orderAmount) {
         this.orderAmount = orderAmount;
-    }
-
-    public String getOrderCurrency() {
-        return orderCurrency;
-    }
-
-    public void setOrderCurrency(String orderCurrency) {
-        this.orderCurrency = orderCurrency;
-    }
-
-    public String getOrderNote() {
-        return orderNote;
-    }
-
-    public void setOrderNote(String orderNote) {
-        this.orderNote = orderNote;
     }
 
     public String getCustomerName() {
