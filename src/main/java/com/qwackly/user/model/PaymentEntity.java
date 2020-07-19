@@ -12,7 +12,11 @@ public class PaymentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer amount;
+    private String amount;
+    private String referenceId;
+    private String payMentMode;
+    private String paymentStatus;
+    private String tranxactionMessage;
     @OneToOne
     @JoinColumn(name = "orderId")
     private OrderEntity orderEntity;
@@ -27,11 +31,11 @@ public class PaymentEntity {
         this.id = id;
     }
 
-    public Integer getAmount() {
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 
@@ -57,6 +61,38 @@ public class PaymentEntity {
 
     public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
         this.modifiedTimestamp = modifiedTimestamp;
+    }
+
+    public String getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
+
+    public String getPayMentMode() {
+        return payMentMode;
+    }
+
+    public void setPayMentMode(String payMentMode) {
+        this.payMentMode = payMentMode;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getTranxactionMessage() {
+        return tranxactionMessage;
+    }
+
+    public void setTranxactionMessage(String tranxactionMessage) {
+        this.tranxactionMessage = tranxactionMessage;
     }
 
 }
