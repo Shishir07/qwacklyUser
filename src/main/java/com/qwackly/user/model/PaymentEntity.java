@@ -14,9 +14,9 @@ public class PaymentEntity {
     private Integer id;
     private String amount;
     private String referenceId;
-    private String payMentMode;
+    private String paymentMode;
     private String paymentStatus;
-    private String tranxactionMessage;
+    private String transactionMessage;
     @OneToOne
     @JoinColumn(name = "orderId")
     private OrderEntity orderEntity;
@@ -71,14 +71,6 @@ public class PaymentEntity {
         this.referenceId = referenceId;
     }
 
-    public String getPayMentMode() {
-        return payMentMode;
-    }
-
-    public void setPayMentMode(String payMentMode) {
-        this.payMentMode = payMentMode;
-    }
-
     public String getPaymentStatus() {
         return paymentStatus;
     }
@@ -87,12 +79,20 @@ public class PaymentEntity {
         this.paymentStatus = paymentStatus;
     }
 
-    public String getTranxactionMessage() {
-        return tranxactionMessage;
+    public String getPaymentMode() {
+        return paymentMode;
     }
 
-    public void setTranxactionMessage(String tranxactionMessage) {
-        this.tranxactionMessage = tranxactionMessage;
+    public void setPaymentMode(String paymentMode) {
+        this.paymentMode = paymentMode;
+    }
+
+    public String getTransactionMessage() {
+        return transactionMessage;
+    }
+
+    public void setTransactionMessage(String transactionMessage) {
+        this.transactionMessage = transactionMessage;
     }
 
 }

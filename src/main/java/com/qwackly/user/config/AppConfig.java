@@ -10,6 +10,7 @@ import com.qwackly.user.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -112,6 +113,7 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**", "/oauth2/**", "/swagger-ui.html", "/v3/api-docs")
                 .permitAll()
                 .antMatchers("/v1/products").permitAll()
+                .antMatchers(HttpMethod.POST,"/v1/payment/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

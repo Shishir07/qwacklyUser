@@ -44,16 +44,16 @@ public class PaymentService {
     @Autowired
     ProductService productService;
 
-    public String getSignature(PaymentRequest paymentRequest) throws NoSuchAlgorithmException, InvalidKeyException {
+    public String getSignature(MultiValueMap<String, String> paymentRequest) throws NoSuchAlgorithmException, InvalidKeyException {
         Map<String, String> postData = new HashMap<>();
         postData.put("appId", appId);
-        postData.put("orderId", paymentRequest.getOrderId());
-        postData.put("orderAmount", String.valueOf(paymentRequest.getOrderAmount()));
+        postData.put("orderId", String.valueOf(paymentRequest.get("orderId").get(0)));
+        postData.put("orderAmount", String.valueOf(paymentRequest.get("orderAmount").get(0)));
         postData.put("orderCurrency", "INR");
         postData.put("orderNote", "Qwackly Payments");
-        postData.put("customerName", paymentRequest.getCustomerName());
-        postData.put("customerEmail", paymentRequest.getCustomerEmail());
-        postData.put("customerPhone", paymentRequest.getCustomerPhone());
+        postData.put("customerName", String.valueOf(paymentRequest.get("customerName").get(0)));
+        postData.put("customerEmail", String.valueOf(paymentRequest.get("customerEmail").get(0)));
+        postData.put("customerPhone", String.valueOf(paymentRequest.get("customerPhone").get(0)));
         postData.put("returnUrl", "http://localhost:8080/v1/payment/callback");
         postData.put("notifyUrl", "http://localhost:8080/v1/payment/notify");
         String data = "";
@@ -68,24 +68,24 @@ public class PaymentService {
         return Base64.getEncoder().encodeToString(sha256_HMAC.doFinal(data.getBytes()));
     }
 
-    public HttpEntity<MultiValueMap<String, String>> getPayload(@RequestBody PaymentRequest paymentRequest, String signature) {
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("appId", appId);
-        map.add("orderId", paymentRequest.getOrderId());
-        map.add("orderAmount", String.valueOf(paymentRequest.getOrderAmount()));
-        map.add("orderCurrency", "INR");
-        map.add("orderNote", "Qwackly Payments");
-        map.add("customerName", paymentRequest.getCustomerName());
-        map.add("customerEmail", paymentRequest.getCustomerEmail());
-        map.add("customerPhone", paymentRequest.getCustomerPhone());
-        map.add("returnUrl", "http://localhost:8080/v1/payment/callback");
-        map.add("notifyUrl", "http://localhost:8080/v1/payment/notify");
-        map.add("signature", signature);
+    public HttpEntity<MultiValueMap<String, String>> getPayload(MultiValueMap<String, String> paymentRequest, String signature) {
+        MultiValueMap<String, String> postData = new LinkedMultiValueMap<>();
+        postData.add("appId", appId);
+        postData.add("orderId", String.valueOf(paymentRequest.get("orderId").get(0)));
+        postData.add("orderAmount", String.valueOf(paymentRequest.get("orderAmount").get(0)));
+        postData.add("orderCurrency", "INR");
+        postData.add("orderNote", "Qwackly Payments");
+        postData.add("customerName", String.valueOf(paymentRequest.get("customerName").get(0)));
+        postData.add("customerEmail", String.valueOf(paymentRequest.get("customerEmail").get(0)));
+        postData.add("customerPhone", String.valueOf(paymentRequest.get("customerPhone").get(0)));
+        postData.add("returnUrl", "http://localhost:8080/v1/payment/callback");
+        postData.add("notifyUrl", "http://localhost:8080/v1/payment/notify");
+        postData.add("signature", signature);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        return new HttpEntity<>(map, headers);
+        return new HttpEntity<>(postData, headers);
     }
 
     public ResponseEntity<String> makePaymentCallToCashfree(HttpEntity<MultiValueMap<String, String>> request) {
@@ -95,21 +95,21 @@ public class PaymentService {
 
     public void savePayment(MultiValueMap<String, String> cashfreeResponse){
         PaymentEntity paymentEntity = new PaymentEntity();
-        OrderEntity orderEntity = orderService.getOrder(String.valueOf(cashfreeResponse.get("orderId")));
-        String paymentStatus = String.valueOf(cashfreeResponse.get("txStatus"));
-        String paymentMode = String.valueOf(cashfreeResponse.get("paymentMode"));
-        String reference = String.valueOf(cashfreeResponse.get("referenceId"));
+        OrderEntity orderEntity = orderService.getOrder(String.valueOf(cashfreeResponse.get("orderId").get(0)));
+        String paymentStatus = String.valueOf(cashfreeResponse.get("txStatus").get(0));
+        String paymentMode = String.valueOf(cashfreeResponse.get("paymentMode").get(0));
+        String reference = String.valueOf(cashfreeResponse.get("referenceId").get(0));
         PaymentEntity existingPayment = paymentRepository.findByOrderEntity(orderEntity);
         if (Objects.nonNull(existingPayment)){
             existingPayment.setPaymentStatus(paymentStatus);
-            existingPayment.setPayMentMode(paymentMode);
+            existingPayment.setPaymentMode(paymentMode);
             existingPayment.setReferenceId(reference);
             paymentRepository.save(existingPayment);
         }
         else {
             paymentEntity.setOrderEntity(orderEntity);
-            paymentEntity.setAmount(String.valueOf(cashfreeResponse.get("orderAmount")));
-            paymentEntity.setPayMentMode(paymentMode);
+            paymentEntity.setAmount(String.valueOf(cashfreeResponse.get("orderAmount").get(0)));
+            paymentEntity.setPaymentMode(paymentMode);
             paymentEntity.setReferenceId(reference);
             paymentEntity.setPaymentStatus(paymentStatus);
             paymentRepository.save(paymentEntity);

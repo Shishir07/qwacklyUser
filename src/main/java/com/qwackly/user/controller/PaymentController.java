@@ -33,8 +33,8 @@ public class PaymentController {
     PaymentService paymentService;
 
 
-    @PostMapping(value = "/payment")
-    public ResponseEntity<String> makePayment(@RequestBody PaymentRequest paymentRequest, HttpServletResponse servletresponse) throws IOException {
+    @PostMapping(value = "/payment", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<String> makePayment(@RequestBody MultiValueMap<String, String> paymentRequest, HttpServletResponse servletresponse) throws IOException {
         ResponseEntity<String> response = null;
         try {
             String signature = paymentService.getSignature(paymentRequest);
@@ -49,7 +49,7 @@ public class PaymentController {
     @PostMapping(value = "/payment/callback", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public void cashfreeCallback(@RequestBody MultiValueMap<String, String> cashfreeResponse, HttpServletResponse response) throws IOException {
         paymentService.savePayment(cashfreeResponse);
-        if ("SUCCESSFUL".equalsIgnoreCase(String.valueOf(cashfreeResponse.get("txStatus")))){
+        if ("SUCCESS".equalsIgnoreCase(String.valueOf(cashfreeResponse.get("txStatus").get(0)))){
             response.sendRedirect(successRedirect);
         }
         else{
