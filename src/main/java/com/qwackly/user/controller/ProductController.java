@@ -43,7 +43,7 @@ public class ProductController {
     @RequestMapping(value = "/products", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE )
     public ResponseEntity<List<ProductEntity>> getProducts(){
         try {
-            productEntities=productService.getAllProducts();
+            productEntities=productService.getAllAvailableProducts();
         }
         catch (Exception e){
             throw new QwacklyException(e.getMessage(), ResponseStatus.FAILURE);

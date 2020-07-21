@@ -17,11 +17,21 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public List<ProductEntity> getAllAvailableProducts(){
+        return productRepository.findByStatusNot("SOLD");
+    }
+
     public ProductEntity getProduct(Integer id){
         return productRepository.findById(id);
     }
 
     public void addProduct(ProductEntity productEntity){
         productRepository.save(productEntity);
+    }
+    public void updateProductStatus(ProductEntity productEntity, String status){
+        if ("SUCCESS".equalsIgnoreCase(status)) {
+            productEntity.setStatus(status);
+            productRepository.save(productEntity);
+        }
     }
 }

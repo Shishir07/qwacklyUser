@@ -1,6 +1,7 @@
 package com.qwackly.user.service;
 
 import com.qwackly.user.model.OrderEntity;
+import com.qwackly.user.model.OrderProductEntity;
 import com.qwackly.user.model.PaymentEntity;
 import com.qwackly.user.model.ProductEntity;
 import com.qwackly.user.repository.PaymentRepository;
@@ -40,6 +41,9 @@ public class PaymentService {
 
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    OrderProductService orderProductService;
 
     @Autowired
     ProductService productService;
@@ -96,6 +100,8 @@ public class PaymentService {
     public void savePayment(MultiValueMap<String, String> cashfreeResponse){
         PaymentEntity paymentEntity = new PaymentEntity();
         OrderEntity orderEntity = orderService.getOrder(String.valueOf(cashfreeResponse.get("orderId").get(0)));
+        OrderProductEntity orderProductEntity = orderProductService.findByOrderEntity(orderEntity);
+        ProductEntity productEntity = orderProductEntity.getProductEntity();
         String paymentStatus = String.valueOf(cashfreeResponse.get("txStatus").get(0));
         String paymentMode = String.valueOf(cashfreeResponse.get("paymentMode").get(0));
         String reference = String.valueOf(cashfreeResponse.get("referenceId").get(0));
@@ -114,5 +120,8 @@ public class PaymentService {
             paymentEntity.setPaymentStatus(paymentStatus);
             paymentRepository.save(paymentEntity);
         }
+        orderService.updateOrderState(orderEntity,paymentStatus);
+        orderProductService.updateOrderProductState(orderProductEntity,paymentStatus);
+        productService.updateProductStatus(productEntity,paymentStatus);
     }
 }

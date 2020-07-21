@@ -47,4 +47,13 @@ public class OrderProductService {
         }
         return orderProductEntities;
     }
+
+    public OrderProductEntity findByOrderEntity(OrderEntity orderEntity){
+        return orderProductRepository.findByOrderEntity(orderEntity);
+    }
+
+    public void updateOrderProductState(OrderProductEntity orderProductEntity, String state){
+        orderProductEntity.setState(state);
+        orderProductRepository.save(orderProductEntity);
+    }
 }

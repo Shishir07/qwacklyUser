@@ -5,12 +5,11 @@ import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import com.vladmihalcea.hibernate.type.json.JsonNodeStringType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.apache.commons.lang3.SerializationUtils;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
@@ -35,7 +34,17 @@ public class ProductEntity {
     private String shortDescription;
     @Column(columnDefinition = "TEXT")
     private String longDescription;
+    @Column(name = "price")
     private Integer price;
+    @Column(name = "delivery_charge")
+    private Integer deliveryCharge;
+
+    @Formula("price + delivery_charge")
+    private Integer finalPrice;
+
+    @ColumnDefault("ADDED")
+    private String status;
+
     private String thumbNailImage;
 
     @Type(type = "serializable")
@@ -122,5 +131,29 @@ public class ProductEntity {
 
     public void setImages(List<Images> images) {
         this.images = images;
+    }
+
+    public Integer getDeliveryCharge() {
+        return deliveryCharge;
+    }
+
+    public void setDeliveryCharge(Integer deliveryCharge) {
+        this.deliveryCharge = deliveryCharge;
+    }
+
+    public Integer getFinalPrice() {
+        return finalPrice;
+    }
+
+    public void setFinalPrice(Integer finalPrice) {
+        this.finalPrice = finalPrice;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

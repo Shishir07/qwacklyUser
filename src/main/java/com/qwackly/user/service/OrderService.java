@@ -1,5 +1,6 @@
 package com.qwackly.user.service;
 
+import com.qwackly.user.enums.OrderStatus;
 import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.OrderEntity;
 import com.qwackly.user.model.ProductEntity;
@@ -61,6 +62,14 @@ public class OrderService {
     public OrderEntity findByProductIdIdAndUseId(Integer productid, Integer userId){
         return orderRepository.findByProductIdIdAndUseId(productid,userId);
     }
-
+    public void updateOrderState(OrderEntity orderEntity, String state){
+        if ("SUCCESS".equalsIgnoreCase(state)){
+            orderEntity.setState(OrderStatus.PAYMENT_COMPLETED);
+        }
+        else {
+            orderEntity.setState(OrderStatus.PAYMENT_FAILED);
+        }
+        orderRepository.save(orderEntity);
+    }
 
 }
