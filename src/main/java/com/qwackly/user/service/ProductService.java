@@ -18,7 +18,7 @@ public class ProductService {
     }
 
     public List<ProductEntity> getAllAvailableProducts(){
-        return productRepository.findByStatusNot("SOLD");
+        return productRepository.findByNoOfProductsGreaterThan(0);
     }
 
     public ProductEntity getProduct(Integer id){
@@ -28,9 +28,9 @@ public class ProductService {
     public void addProduct(ProductEntity productEntity){
         productRepository.save(productEntity);
     }
-    public void updateProductStatus(ProductEntity productEntity, String status){
-        if ("SUCCESS".equalsIgnoreCase(status) && !productEntity.getName().contains("video")) {
-            productEntity.setStatus("SOLD");
+    public void updateProductNumber(ProductEntity productEntity, String status){
+        if ("SUCCESS".equalsIgnoreCase(status) ) {
+            productEntity.setNoOfProducts(productEntity.getNoOfProducts()-1);
             productRepository.save(productEntity);
         }
     }

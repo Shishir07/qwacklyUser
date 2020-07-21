@@ -122,6 +122,5 @@ public class PaymentService {
         }
         orderService.updateOrderState(orderEntity,paymentStatus);
         orderProductService.updateOrderProductState(orderProductEntity,paymentStatus);
-        productService.updateProductStatus(productEntity,paymentStatus);
     }
 }

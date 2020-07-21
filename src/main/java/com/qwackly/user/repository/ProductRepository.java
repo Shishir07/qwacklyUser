@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<ProductEntity, String> {
     ProductEntity findById(Integer id);
-    List<ProductEntity> findByStatusNot(String status);
+    List<ProductEntity> findByNoOfProductsGreaterThan(Integer number);
 }

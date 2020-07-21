@@ -21,6 +21,8 @@ public class OrderProductService {
     UserService userService;
     @Autowired
     OrderRepository orderRepository;
+    @Autowired
+    ProductService productService;
 
     public void addOrderProduct(OrderProductEntity orderProductEntity){
         orderProductRepository.save(orderProductEntity);
@@ -53,7 +55,11 @@ public class OrderProductService {
     }
 
     public void updateOrderProductState(OrderProductEntity orderProductEntity, String state){
-        orderProductEntity.setState(state);
-        orderProductRepository.save(orderProductEntity);
+        ProductEntity productEntity = orderProductEntity.getProductEntity();
+        if (!"SUCCESS".equalsIgnoreCase(orderProductEntity.getState())){
+            orderProductEntity.setState(state);
+            orderProductRepository.save(orderProductEntity);
+            productService.updateProductNumber(productEntity,state);
+        }
     }
 }

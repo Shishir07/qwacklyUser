@@ -42,8 +42,7 @@ public class ProductEntity {
     @Formula("price + delivery_charge")
     private Integer finalPrice;
 
-    @ColumnDefault("ADDED")
-    private String status;
+    private Integer noOfProducts;
 
     private String thumbNailImage;
 
@@ -149,11 +148,11 @@ public class ProductEntity {
         this.finalPrice = finalPrice;
     }
 
-    public String getStatus() {
-        return status;
+    public Integer getNoOfProducts() {
+        return noOfProducts;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setNoOfProducts(Integer noOfProducts) {
+        this.noOfProducts = noOfProducts;
     }
 }
