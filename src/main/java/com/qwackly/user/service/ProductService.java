@@ -29,8 +29,8 @@ public class ProductService {
         productRepository.save(productEntity);
     }
     public void updateProductStatus(ProductEntity productEntity, String status){
-        if ("SUCCESS".equalsIgnoreCase(status)) {
-            productEntity.setStatus(status);
+        if ("SUCCESS".equalsIgnoreCase(status) && !productEntity.getName().contains("video")) {
+            productEntity.setStatus("SOLD");
             productRepository.save(productEntity);
         }
     }
