@@ -50,10 +50,10 @@ public class OrderService {
         return orderRepository.findByUserEntity(userEntity);
     }
 
-    public List<OrderEntity> getCartforUser(Integer userId,String status){
+    /*public List<OrderEntity> getCartforUser(Integer userId,String status){
         userEntity.setId(userId);
         return orderRepository.findByUserEntityAndState(userEntity,status);
-    }
+    }*/
 
     public void deleteOrder(OrderEntity orderEntity){
         orderRepository.delete(orderEntity);

@@ -43,10 +43,10 @@ public class OrderProductService {
     public List<OrderProductEntity> getAllOrdersByUserAndStatus(Integer userId, String status){
         UserEntity userEntity=userService.getUserDetails(userId);
         OrderStatus orderStatus= OrderStatus.PAYMENT_COMPLETED;
-        if (status.contains("PENDING")){
+        if (status.equalsIgnoreCase("PENDING")){
             orderStatus= OrderStatus.PENDING_PAYMENT;
         }
-        if (status.contains("FAILED")){
+        if (status.equalsIgnoreCase("FAILED")){
             orderStatus= OrderStatus.PAYMENT_FAILED;
         }
         List<OrderEntity> orderList= orderRepository.findByUserEntityAndState(userEntity,orderStatus);
