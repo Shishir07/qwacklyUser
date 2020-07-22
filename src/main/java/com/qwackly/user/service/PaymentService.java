@@ -101,15 +101,16 @@ public class PaymentService {
         PaymentEntity paymentEntity = new PaymentEntity();
         OrderEntity orderEntity = orderService.getOrder(String.valueOf(cashfreeResponse.get("orderId").get(0)));
         OrderProductEntity orderProductEntity = orderProductService.findByOrderEntity(orderEntity);
-        ProductEntity productEntity = orderProductEntity.getProductEntity();
         String paymentStatus = String.valueOf(cashfreeResponse.get("txStatus").get(0));
         String paymentMode = String.valueOf(cashfreeResponse.get("paymentMode").get(0));
         String reference = String.valueOf(cashfreeResponse.get("referenceId").get(0));
+        String transactionMessage = String.valueOf(cashfreeResponse.get("txMsg").get(0));
         PaymentEntity existingPayment = paymentRepository.findByOrderEntity(orderEntity);
         if (Objects.nonNull(existingPayment)){
             existingPayment.setPaymentStatus(paymentStatus);
             existingPayment.setPaymentMode(paymentMode);
             existingPayment.setReferenceId(reference);
+            existingPayment.setTransactionMessage(transactionMessage);
             paymentRepository.save(existingPayment);
         }
         else {
@@ -118,6 +119,7 @@ public class PaymentService {
             paymentEntity.setPaymentMode(paymentMode);
             paymentEntity.setReferenceId(reference);
             paymentEntity.setPaymentStatus(paymentStatus);
+            paymentEntity.setTransactionMessage(transactionMessage);
             paymentRepository.save(paymentEntity);
         }
         orderService.updateOrderState(orderEntity,paymentStatus);
