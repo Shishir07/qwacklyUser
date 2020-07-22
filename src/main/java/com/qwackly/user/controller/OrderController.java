@@ -58,11 +58,11 @@ public class OrderController {
 
     private static  Map<String,String> response= new HashMap<>();
 
-    @GetMapping(value = "/users/{userId}/orders")
-    public ResponseEntity<ListOrderResponse> getOrders(@PathVariable Integer userId){
+    @GetMapping(value = "/users/{userId}/orders/{status}")
+    public ResponseEntity<ListOrderResponse> getOrders(@PathVariable Integer userId, @PathVariable String status){
         List<OrderProductEntity> orderList;
         try {
-            orderList=orderProductService.getAllOrdersForUser(userId);
+            orderList=orderProductService.getAllOrdersByUserAndStatus(userId,status);
             listOrderResponse.setListOfOrders(orderList);
         }
         catch (Exception e){

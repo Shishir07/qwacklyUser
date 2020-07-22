@@ -1,5 +1,6 @@
 package com.qwackly.user.service;
 
+import com.qwackly.user.enums.OrderStatus;
 import com.qwackly.user.model.OrderEntity;
 import com.qwackly.user.model.OrderProductEntity;
 import com.qwackly.user.model.ProductEntity;
@@ -39,9 +40,16 @@ public class OrderProductService {
         return orderProductRepository.findByOrderEntityAndProductEntity(orderEntity,productEntity);
     }
 
-    public List<OrderProductEntity> getAllOrdersForUser(Integer userId){
+    public List<OrderProductEntity> getAllOrdersByUserAndStatus(Integer userId, String status){
         UserEntity userEntity=userService.getUserDetails(userId);
-        List<OrderEntity> orderList= orderRepository.findByUserEntity(userEntity);
+        OrderStatus orderStatus= OrderStatus.PAYMENT_COMPLETED;
+        if (status.contains("PENDING")){
+            orderStatus= OrderStatus.PENDING_PAYMENT;
+        }
+        if (status.contains("FAILED")){
+            orderStatus= OrderStatus.PAYMENT_FAILED;
+        }
+        List<OrderEntity> orderList= orderRepository.findByUserEntityAndState(userEntity,orderStatus);
         List<OrderProductEntity> orderProductEntities = new ArrayList<>();
         for(OrderEntity orderEntity: orderList){
             OrderProductEntity orderProductEntity = orderProductRepository.findByOrderEntity(orderEntity);
