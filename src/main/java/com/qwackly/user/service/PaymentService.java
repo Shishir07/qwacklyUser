@@ -48,8 +48,8 @@ public class PaymentService {
     @Autowired
     ProductService productService;
 
-    private static final String CASHFREE_CALLBACK_URL = "http://development.qwackly.com:8089/v1/payment/callback";
-    private static final String CASHFREE_NOTIFY_URL = "http://development.qwackly.com:8089/v1/payment/notify";
+    private static final String CASHFREE_CALLBACK_URL = "http://development.qwackly.in:8089/v1/payment/callback";
+    private static final String CASHFREE_NOTIFY_URL = "http://development.qwackly.in:8089/v1/payment/notify";
 
     public String getSignature(MultiValueMap<String, String> paymentRequest) throws NoSuchAlgorithmException, InvalidKeyException {
         Map<String, String> postData = new HashMap<>();
