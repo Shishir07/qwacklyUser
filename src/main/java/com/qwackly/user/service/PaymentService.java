@@ -48,6 +48,9 @@ public class PaymentService {
     @Autowired
     ProductService productService;
 
+    private static final String CASHFREE_CALLBACK_URL = "http://development.qwackly.com:8089/v1/payment/callback";
+    private static final String CASHFREE_NOTIFY_URL = "http://development.qwackly.com:8089/v1/payment/notify";
+
     public String getSignature(MultiValueMap<String, String> paymentRequest) throws NoSuchAlgorithmException, InvalidKeyException {
         Map<String, String> postData = new HashMap<>();
         postData.put("appId", appId);
@@ -58,8 +61,8 @@ public class PaymentService {
         postData.put("customerName", String.valueOf(paymentRequest.get("customerName").get(0)));
         postData.put("customerEmail", String.valueOf(paymentRequest.get("customerEmail").get(0)));
         postData.put("customerPhone", String.valueOf(paymentRequest.get("customerPhone").get(0)));
-        postData.put("returnUrl", "http://localhost:8080/v1/payment/callback");
-        postData.put("notifyUrl", "http://localhost:8080/v1/payment/notify");
+        postData.put("returnUrl", CASHFREE_CALLBACK_URL);
+        postData.put("notifyUrl", CASHFREE_NOTIFY_URL);
         String data = "";
         SortedSet<String> keys = new TreeSet<String>(postData.keySet());
         for (String key : keys) {
@@ -82,8 +85,8 @@ public class PaymentService {
         postData.add("customerName", String.valueOf(paymentRequest.get("customerName").get(0)));
         postData.add("customerEmail", String.valueOf(paymentRequest.get("customerEmail").get(0)));
         postData.add("customerPhone", String.valueOf(paymentRequest.get("customerPhone").get(0)));
-        postData.add("returnUrl", "http://localhost:8080/v1/payment/callback");
-        postData.add("notifyUrl", "http://localhost:8080/v1/payment/notify");
+        postData.add("returnUrl", CASHFREE_CALLBACK_URL);
+        postData.add("notifyUrl", CASHFREE_NOTIFY_URL);
         postData.add("signature", signature);
 
         HttpHeaders headers = new HttpHeaders();
