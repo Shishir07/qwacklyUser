@@ -113,7 +113,7 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**", "/oauth2/**", "/swagger-ui.html", "/v3/api-docs")
                 .permitAll()
                 .antMatchers("/v1/products").permitAll()
-                .antMatchers(HttpMethod.POST,"/v1/payment/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/v1/payment/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
