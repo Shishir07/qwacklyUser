@@ -36,6 +36,12 @@ public class PaymentService {
     @Value("${cashfree.postUrl}")
     private String postUrl;
 
+    @Value("${cashfree.callbackUrl}")
+    private String callBackUrl;
+
+    @Value("${cashfree.notifyUrl}")
+    private String notifyUrl;
+
     @Autowired
     PaymentRepository paymentRepository;
 
@@ -48,8 +54,6 @@ public class PaymentService {
     @Autowired
     ProductService productService;
 
-    private static final String CASHFREE_CALLBACK_URL = "http://development.qwackly.in:8089/v1/payment/callback";
-    private static final String CASHFREE_NOTIFY_URL = "http://development.qwackly.in:8089/v1/payment/notify";
 
     public String getSignature(MultiValueMap<String, String> paymentRequest) throws NoSuchAlgorithmException, InvalidKeyException {
         Map<String, String> postData = new HashMap<>();
@@ -61,8 +65,8 @@ public class PaymentService {
         postData.put("customerName", String.valueOf(paymentRequest.get("customerName").get(0)));
         postData.put("customerEmail", String.valueOf(paymentRequest.get("customerEmail").get(0)));
         postData.put("customerPhone", String.valueOf(paymentRequest.get("customerPhone").get(0)));
-        postData.put("returnUrl", CASHFREE_CALLBACK_URL);
-        postData.put("notifyUrl", CASHFREE_NOTIFY_URL);
+        postData.put("returnUrl", callBackUrl);
+        postData.put("notifyUrl", notifyUrl);
         String data = "";
         SortedSet<String> keys = new TreeSet<String>(postData.keySet());
         for (String key : keys) {
@@ -85,8 +89,8 @@ public class PaymentService {
         postData.add("customerName", String.valueOf(paymentRequest.get("customerName").get(0)));
         postData.add("customerEmail", String.valueOf(paymentRequest.get("customerEmail").get(0)));
         postData.add("customerPhone", String.valueOf(paymentRequest.get("customerPhone").get(0)));
-        postData.add("returnUrl", CASHFREE_CALLBACK_URL);
-        postData.add("notifyUrl", CASHFREE_NOTIFY_URL);
+        postData.add("returnUrl", callBackUrl);
+        postData.add("notifyUrl", notifyUrl);
         postData.add("signature", signature);
 
         HttpHeaders headers = new HttpHeaders();
