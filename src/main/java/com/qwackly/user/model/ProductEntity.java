@@ -30,6 +30,9 @@ public class ProductEntity {
     @ManyToOne
     @JoinColumn(name = "celebId")
     private CelebEntity celebEntity;
+    @ManyToOne
+    @JoinColumn(name = "ngoId")
+    private NgoEntity ngo;
     private String name;
     private String shortDescription;
     @Column(columnDefinition = "TEXT")
@@ -154,5 +157,13 @@ public class ProductEntity {
 
     public void setNoOfProducts(Integer noOfProducts) {
         this.noOfProducts = noOfProducts;
+    }
+
+    public NgoEntity getNgo() {
+        return ngo;
+    }
+
+    public void setNgo(NgoEntity ngo) {
+        this.ngo = ngo;
     }
 }
