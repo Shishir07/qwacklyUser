@@ -47,6 +47,8 @@ public class ProductEntity {
 
     private Integer noOfProducts;
 
+    private Integer percentageDonation;
+
     private String thumbNailImage;
 
     @Type(type = "serializable")
@@ -166,4 +168,13 @@ public class ProductEntity {
     public void setNgo(NgoEntity ngo) {
         this.ngo = ngo;
     }
+
+    public Integer getPercentageDonation() {
+        return percentageDonation;
+    }
+
+    public void setPercentageDonation(Integer percentageDonation) {
+        this.percentageDonation = percentageDonation;
+    }
+
 }
