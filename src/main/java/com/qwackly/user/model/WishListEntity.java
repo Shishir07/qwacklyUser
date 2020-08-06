@@ -1,5 +1,6 @@
 package com.qwackly.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ public class WishListEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private Integer id;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
@@ -23,6 +25,7 @@ public class WishListEntity {
     private ProductEntity productEntity;
     private String status;
     @CreationTimestamp
+    @JsonIgnore
     private Timestamp createdTimestamp, modifiedTimestamp;
 
     public Integer getId() {

@@ -44,11 +44,13 @@ public class UserEntity {
 
     @JsonManagedReference
     @OneToMany(cascade=CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonIgnore
     private Set<UserRolesEntity> roles;
 
 
 
     @CreationTimestamp
+    @JsonIgnore
     private Timestamp createdTimestamp, modifiedTimestamp;
 
     public Integer getId() {

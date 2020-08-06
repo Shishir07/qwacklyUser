@@ -1,5 +1,6 @@
 package com.qwackly.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -11,12 +12,14 @@ public class OrderShipmentDetailEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Integer id;
     private String currentStatus;
     @OneToOne
     @JoinColumn(name = "orderShipmentId")
     private OrderShipmentEntity orderShipmentEntity;
     @CreationTimestamp
+    @JsonIgnore
     private Timestamp createdTimestamp, modifiedTimestamp;
 
     public Integer getId() {

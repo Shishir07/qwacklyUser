@@ -1,5 +1,6 @@
 package com.qwackly.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qwackly.user.enums.OrderStatus;
 import org.hibernate.annotations.CreationTimestamp;
 

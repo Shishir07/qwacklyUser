@@ -1,5 +1,6 @@
 package com.qwackly.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qwackly.user.util.Images;
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import com.vladmihalcea.hibernate.type.json.JsonNodeStringType;
@@ -55,6 +56,7 @@ public class ProductEntity {
     private List<Images> images;
 
     @CreationTimestamp
+    @JsonIgnore
     private Timestamp createdTimestamp,modifiedTimestamp;
 
     public Integer getId() {

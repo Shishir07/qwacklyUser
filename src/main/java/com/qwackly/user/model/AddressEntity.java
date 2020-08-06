@@ -1,5 +1,6 @@
 package com.qwackly.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ public class AddressEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -24,6 +26,7 @@ public class AddressEntity {
     private String pinCode;
 
     @CreationTimestamp
+    @JsonIgnore
     private Timestamp createdTimestamp,modifiedTimestamp;
 
     public Integer getId() {

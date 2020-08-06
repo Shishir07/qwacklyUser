@@ -1,5 +1,6 @@
 package com.qwackly.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.Date;
 public class CelebEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Integer id;
     private String firstName;
     private String lastName;
@@ -21,6 +23,7 @@ public class CelebEntity {
     private String thumbNailImage;
 
     @CreationTimestamp
+    @JsonIgnore
     private Date createdTimestamp, modifiedTimestamp;
 
     public Integer getId() {

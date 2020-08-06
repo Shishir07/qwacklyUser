@@ -1,5 +1,6 @@
 package com.qwackly.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ public class OrderShipmentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Integer id;
     private String courierName;
     private String trackingId;
@@ -18,6 +20,7 @@ public class OrderShipmentEntity {
     @JoinColumn(name = "orderProductId")
     private OrderProductEntity orderProductEntity;
     @CreationTimestamp
+    @JsonIgnore
     private Timestamp createdTimestamp, modifiedTimestamp;
 
     public Integer getId() {

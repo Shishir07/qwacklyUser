@@ -2,6 +2,7 @@ package com.qwackly.user.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Column;
@@ -22,6 +23,7 @@ public class UserRolesEntity{
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @JsonIgnore
     @Column(name = "user_role_id",
             unique = true, nullable = false)
     private Integer userRoleId;
@@ -31,6 +33,7 @@ public class UserRolesEntity{
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
+    @JsonIgnore
     private String role;
 
     public UserRolesEntity() {

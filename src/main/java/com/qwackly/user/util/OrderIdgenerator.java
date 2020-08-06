@@ -1,5 +1,6 @@
 package com.qwackly.user.util;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Component;
 
 import java.sql.Time;
@@ -11,9 +12,13 @@ import java.util.UUID;
 public class OrderIdgenerator {
 
     private LocalTime time;
+    private final int SHORT_ID_LENGTH = 8;
+    private static final String CHARS = "0123456789abcdefghijklm";
 
     public String getUniqueOrderId(){
         time= LocalTime.now();
-        return UUID.nameUUIDFromBytes(time.toString().getBytes()).toString();
+        String shortUniqueId = RandomStringUtils.random(SHORT_ID_LENGTH, CHARS);
+        return shortUniqueId;
+        //return UUID.nameUUIDFromBytes(time.toString().getBytes()).toString();
     }
 }
