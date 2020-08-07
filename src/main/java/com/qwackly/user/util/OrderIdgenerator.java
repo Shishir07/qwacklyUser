@@ -12,7 +12,7 @@ import java.util.UUID;
 public class OrderIdgenerator {
 
     private LocalTime time;
-    private final int SHORT_ID_LENGTH = 8;
+    private final int SHORT_ID_LENGTH = 16;
     private static final String CHARS = "0123456789abcdefghijklm";
 
     public String getUniqueOrderId(){
