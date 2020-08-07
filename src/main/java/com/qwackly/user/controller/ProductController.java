@@ -55,7 +55,7 @@ public class ProductController {
     public ResponseEntity<List<WishListProduct>> getProductsforAUser(@PathVariable Integer id){
         List<WishListProduct> wishListProducts = new ArrayList<>();
         try {
-            productEntities=productService.getAllProducts();
+            productEntities=productService.getAllAvailableProducts();
 
             for (ProductEntity productEntity: productEntities){
                 WishListProduct wishListProduct = new WishListProduct();
