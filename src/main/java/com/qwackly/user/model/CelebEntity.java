@@ -11,7 +11,6 @@ import java.util.Date;
 public class CelebEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Integer id;
     private String firstName;
     private String lastName;
