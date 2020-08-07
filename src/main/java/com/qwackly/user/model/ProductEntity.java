@@ -43,7 +43,10 @@ public class ProductEntity {
     @Column(name = "delivery_charge")
     private Integer deliveryCharge;
 
-    @Formula("price + delivery_charge")
+    @Formula("0.18 * price")
+    private Integer gst;
+
+    @Formula("1.18*price + delivery_charge")
     private Integer finalPrice;
 
     private Integer noOfProducts;
@@ -177,6 +180,14 @@ public class ProductEntity {
 
     public void setPercentageDonation(Integer percentageDonation) {
         this.percentageDonation = percentageDonation;
+    }
+
+    public Integer getGst() {
+        return gst;
+    }
+
+    public void setGst(Integer gst) {
+        this.gst = gst;
     }
 
 }
