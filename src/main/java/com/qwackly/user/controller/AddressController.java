@@ -4,13 +4,17 @@ import com.qwackly.user.enums.ResponseStatus;
 import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.AddressEntity;
 import com.qwackly.user.model.UserEntity;
+import com.qwackly.user.security.CurrentUser;
+import com.qwackly.user.security.UserPrincipal;
 import com.qwackly.user.service.AddressService;
 import com.qwackly.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -27,9 +31,10 @@ public class AddressController {
 
     private static Map<String,String> response= new HashMap<>();
 
-    @GetMapping(value = "/address/users/{userId}")
-    public ResponseEntity<AddressEntity> getAddressOfUser(@PathVariable Integer userid){
-        UserEntity userEntity=userService.getUserDetails(userid);
+    @GetMapping(value = "/address/users")
+    public ResponseEntity<AddressEntity> getAddressOfUser(@CurrentUser UserPrincipal userPrincipal){
+        Integer userId = userPrincipal.getId();
+        UserEntity userEntity=userService.getUserDetails(userId);
         AddressEntity addressEntity;
         try{
             addressEntity=addressService.findAddressByUserEntity(userEntity);

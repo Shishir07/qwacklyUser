@@ -44,6 +44,10 @@ public class OrderService {
             throw new QwacklyException(ORDER_NOT_ADDED, HttpStatus.NOT_FOUND.value(),ResponseStatus.FAILURE);
     }
 
+    public OrderEntity getOrderByIdAndUserEntity(String id, UserEntity userEntity){
+        return orderRepository.findByIdAndUserEntity(id,userEntity);
+    }
+
     public List<OrderEntity> getAllOrdersForUser(Integer userId){
         //userEntity.setId(userId);
         UserEntity userEntity=userService.getUserDetails(userId);

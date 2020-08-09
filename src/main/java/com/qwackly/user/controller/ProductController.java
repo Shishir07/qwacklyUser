@@ -6,6 +6,8 @@ import com.qwackly.user.model.OrderEntity;
 import com.qwackly.user.model.ProductEntity;
 import com.qwackly.user.model.UserEntity;
 import com.qwackly.user.model.WishListEntity;
+import com.qwackly.user.security.CurrentUser;
+import com.qwackly.user.security.UserPrincipal;
 import com.qwackly.user.service.ProductService;
 import com.qwackly.user.service.UserService;
 import com.qwackly.user.service.WishListService;
@@ -51,15 +53,16 @@ public class ProductController {
         return new ResponseEntity<>(productEntities, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/products/users/{id}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<List<WishListProduct>> getProductsforAUser(@PathVariable Integer id){
+    @RequestMapping(value = "/products/users", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<List<WishListProduct>> getProductsforAUser(@CurrentUser UserPrincipal userPrincipal){
         List<WishListProduct> wishListProducts = new ArrayList<>();
         try {
             productEntities=productService.getAllAvailableProducts();
 
             for (ProductEntity productEntity: productEntities){
                 WishListProduct wishListProduct = new WishListProduct();
-                UserEntity userEntity= userService.getUserDetails(id);
+                Integer userId = userPrincipal.getId();
+                UserEntity userEntity= userService.getUserDetails(userId);
                 boolean isWished = false;
                 if (wishListService.ifProductIsWishedByUser(productEntity,userEntity)){
                     isWished=true;
@@ -99,6 +102,7 @@ public class ProductController {
         return new ResponseEntity<>(productEntity, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/products", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE )
     public ResponseEntity<ProductEntity> modifyProduct(@RequestBody ProductEntity input){
         try {

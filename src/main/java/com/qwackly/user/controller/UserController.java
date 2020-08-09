@@ -33,6 +33,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    private final String USER_ID = "userId";
+
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/users", method = RequestMethod.GET )
     public ResponseEntity<ListUserResponse> getUsers(){
 
@@ -49,6 +52,7 @@ public class UserController {
         return new ResponseEntity<>(listUserResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/users/{id}")
     public ResponseEntity<UserEntity> getUser(@PathVariable Integer id){
 
@@ -62,6 +66,7 @@ public class UserController {
         return new ResponseEntity<>(userEntity, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/users", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE )
     public ResponseEntity<UserEntity> addUser(@RequestBody UserEntity userEntity){
 
@@ -74,6 +79,7 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserDetails(userEntity.getId()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/users", method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserEntity> modifyUser(@RequestBody UserEntity userEntity){
 
@@ -90,11 +96,11 @@ public class UserController {
     }
 
 
-    @RequestMapping(value = "/users/{userid}/verify", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<Boolean> verifyUser(@PathVariable Integer userId,@RequestBody String type) {
+    @RequestMapping(value = "/users/verify", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<Boolean> verifyUser(@RequestBody String type, @CurrentUser UserPrincipal userPrincipal) {
         UserEntity user;
         try {
-            user=userService.getUserDetails(userId);
+            user=userService.getUserDetails(userPrincipal.getId());
         }
         catch (Exception e){
             throw new QwacklyException(e.getMessage(), ResponseStatus.FAILURE);

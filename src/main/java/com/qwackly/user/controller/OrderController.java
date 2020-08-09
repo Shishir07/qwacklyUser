@@ -5,6 +5,8 @@ import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.*;
 import com.qwackly.user.response.ApiResponse;
 import com.qwackly.user.response.ListOrderResponse;
+import com.qwackly.user.security.CurrentUser;
+import com.qwackly.user.security.UserPrincipal;
 import com.qwackly.user.service.*;
 import com.qwackly.user.enums.ResponseStatus;
 import com.qwackly.user.util.OrderIdgenerator;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -52,10 +55,11 @@ public class OrderController {
 
     private static  Map<String,String> response= new HashMap<>();
 
-    @RequestMapping(value = "/users/{userId}/orders/{status}" , method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ListOrderResponse> getOrders(@PathVariable Integer userId, @PathVariable String status){
+    @RequestMapping(value = "/users/orders/{status}" , method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ListOrderResponse> getOrders(@PathVariable String status, @CurrentUser UserPrincipal userPrincipal){
         List<OrderProductEntity> orderList;
         ListOrderResponse listOrderResponse = new ListOrderResponse();
+        Integer userId = userPrincipal.getId();
         try {
             orderList=orderProductService.getAllOrdersByUserAndStatus(userId,status);
             listOrderResponse.setListOfOrders(orderList);
@@ -66,8 +70,9 @@ public class OrderController {
             return new ResponseEntity<>(listOrderResponse,HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/users/{userId}/orders", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse> addOrder(@PathVariable Integer userId, @RequestBody Map<String, Integer> payload){
+    @RequestMapping(value = "/users/orders", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse> addOrder( @RequestBody Map<String, Integer> payload, @CurrentUser UserPrincipal userPrincipal ){
+        Integer userId = userPrincipal.getId();
         UserEntity userEntity= userService.getUserDetails(userId);
         Integer productId = payload.get("productId");
         String orderId;
@@ -100,10 +105,12 @@ public class OrderController {
 
 
     @RequestMapping(value = "/orders/{id}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<OrderEntity> getOrder(@PathVariable String id){
+    public ResponseEntity<OrderEntity> getOrder(@PathVariable String id , @CurrentUser UserPrincipal userPrincipal){
         OrderEntity order;
+        Integer userId = userPrincipal.getId();
+        UserEntity userEntity = userService.getUserDetails(userId);
         try {
-            order=orderService.getOrder(id);
+            order=orderService.getOrderByIdAndUserEntity(id,userEntity);
         }
         catch (Exception e){
             throw new QwacklyException(e.getMessage(), ResponseStatus.FAILURE);

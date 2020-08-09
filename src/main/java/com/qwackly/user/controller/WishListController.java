@@ -5,6 +5,8 @@ import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.ProductEntity;
 import com.qwackly.user.model.UserEntity;
 import com.qwackly.user.model.WishListEntity;
+import com.qwackly.user.security.CurrentUser;
+import com.qwackly.user.security.UserPrincipal;
 import com.qwackly.user.service.ProductService;
 import com.qwackly.user.service.UserService;
 import com.qwackly.user.service.WishListService;
@@ -39,11 +41,11 @@ public class WishListController {
 
     private static Map<String,String> response= new HashMap<>();
 
-    @RequestMapping(value = "/wishList/{userid}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<List<ProductEntity>> getWishList(@PathVariable Integer userid) {
+    @RequestMapping(value = "/wishList", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<List<ProductEntity>> getWishList(@CurrentUser UserPrincipal userPrincipal) {
         List<WishListEntity> wishListEntities;
         List<ProductEntity> productEntities;
-        UserEntity userEntity=userService.getUserDetails(userid);
+        UserEntity userEntity=userService.getUserDetails(userPrincipal.getId());
         try{
             wishListEntities=wishListService.findAllProductsForUser(userEntity);
             productEntities=wishListEntities.stream().map(wishListEntity -> wishListEntity.getProductEntity()).collect(Collectors.toList());
@@ -54,10 +56,11 @@ public class WishListController {
         return new ResponseEntity<>(productEntities, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/wishList/{userid}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<Map> addToWishList(@PathVariable Integer userid, @RequestBody Map<String, Object> payload) {
+    @RequestMapping(value = "/wishList", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<Map> addToWishList( @RequestBody Map<String, Object> payload, @CurrentUser UserPrincipal userPrincipal) {
        WishListEntity wishListEntity = new WishListEntity();
-       UserEntity userEntity= userService.getUserDetails(userid);
+        Integer userid = userPrincipal.getId();
+        UserEntity userEntity= userService.getUserDetails(userid);
        ProductEntity productEntity=productService.getProduct((Integer) payload.get("productId"));
         if(Objects.isNull(userEntity) || Objects.isNull(productEntity)){
             throw new QwacklyException(NOT_FOUND, ResponseStatus.FAILURE);
@@ -75,9 +78,10 @@ public class WishListController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/wishList/{userid}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<Map> deleteFromWishList(@PathVariable Integer userid, @RequestBody Map<String, Object> payload) {
+    @RequestMapping(value = "/wishList", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<Map> deleteFromWishList(@RequestBody Map<String, Object> payload, @CurrentUser UserPrincipal userPrincipal) {
         WishListEntity wishListEntity;
+        Integer userid = userPrincipal.getId();
         UserEntity userEntity= userService.getUserDetails(userid);
         ProductEntity productEntity=productService.getProduct((Integer) payload.get("productId"));
         if(Objects.isNull(userEntity) || Objects.isNull(productEntity)){
