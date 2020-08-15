@@ -32,6 +32,7 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
+
     @Autowired
     WishListService wishListService;
 

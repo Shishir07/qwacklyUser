@@ -62,6 +62,8 @@ public class ProductEntity {
     @JsonIgnore
     private Timestamp createdTimestamp,modifiedTimestamp;
 
+    private String productType;
+
     public Integer getId() {
         return id;
     }
@@ -188,6 +190,14 @@ public class ProductEntity {
 
     public void setGst(Integer gst) {
         this.gst = gst;
+    }
+
+    public String getProductType() {
+        return productType;
+    }
+
+    public void setProductType(String productType) {
+        this.productType = productType;
     }
 
 }

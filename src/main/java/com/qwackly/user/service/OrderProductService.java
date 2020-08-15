@@ -49,7 +49,7 @@ public class OrderProductService {
         if (status.equalsIgnoreCase("FAILED")){
             orderStatus= OrderStatus.PAYMENT_FAILED;
         }
-        List<OrderEntity> orderList= orderRepository.findByUserEntityAndState(userEntity,orderStatus);
+        List<OrderEntity> orderList= orderRepository.findByUserEntityAndStateOrderByCreatedTimestamp(userEntity,orderStatus);
         List<OrderProductEntity> orderProductEntities = new ArrayList<>();
         for(OrderEntity orderEntity: orderList){
             OrderProductEntity orderProductEntity = orderProductRepository.findByOrderEntity(orderEntity);
