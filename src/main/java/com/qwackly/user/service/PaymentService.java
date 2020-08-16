@@ -1,5 +1,7 @@
 package com.qwackly.user.service;
 
+import com.qwackly.user.enums.ResponseStatus;
+import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.OrderEntity;
 import com.qwackly.user.model.OrderProductEntity;
 import com.qwackly.user.model.PaymentEntity;
@@ -57,9 +59,12 @@ public class PaymentService {
 
     public String getSignature(MultiValueMap<String, String> paymentRequest) throws NoSuchAlgorithmException, InvalidKeyException {
         Map<String, String> postData = new HashMap<>();
+        String orderId = String.valueOf(paymentRequest.get("orderId").get(0));
+        String orderAmount = String.valueOf(paymentRequest.get("orderAmount").get(0));
+        verifyOrderAmount(orderId, orderAmount);
         postData.put("appId", appId);
-        postData.put("orderId", String.valueOf(paymentRequest.get("orderId").get(0)));
-        postData.put("orderAmount", String.valueOf(paymentRequest.get("orderAmount").get(0)));
+        postData.put("orderId", orderId);
+        postData.put("orderAmount",orderAmount);
         postData.put("orderCurrency", "INR");
         postData.put("orderNote", "Qwackly Payments");
         postData.put("customerName", String.valueOf(paymentRequest.get("customerName").get(0)));
@@ -131,5 +136,13 @@ public class PaymentService {
         }
         orderService.updateOrderState(orderEntity,paymentStatus);
         orderProductService.updateOrderProductState(orderProductEntity,paymentStatus);
+    }
+
+    private void verifyOrderAmount(String orderId, String orderAmount) {
+        OrderEntity orderEntity = orderService.getOrder(orderId);
+        ProductEntity productEntity = orderProductService.findByOrderEntity(orderEntity).getProductEntity();
+        if (!productEntity.getFinalPrice().toString().equalsIgnoreCase(orderAmount)){
+            throw new QwacklyException("Order amount does not match with the price of the product", ResponseStatus.FAILURE);
+        }
     }
 }
