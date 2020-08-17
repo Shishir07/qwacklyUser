@@ -2,12 +2,8 @@ package com.qwackly.user.service;
 
 import com.qwackly.user.enums.ResponseStatus;
 import com.qwackly.user.exception.QwacklyException;
-import com.qwackly.user.model.OrderEntity;
-import com.qwackly.user.model.OrderProductEntity;
-import com.qwackly.user.model.PaymentEntity;
-import com.qwackly.user.model.ProductEntity;
+import com.qwackly.user.model.*;
 import com.qwackly.user.repository.PaymentRepository;
-import com.qwackly.user.request.PaymentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -17,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
@@ -56,12 +51,18 @@ public class PaymentService {
     @Autowired
     ProductService productService;
 
+    @Autowired
+    UserService userService;
+
 
     public String getSignature(MultiValueMap<String, String> paymentRequest) throws NoSuchAlgorithmException, InvalidKeyException {
         Map<String, String> postData = new HashMap<>();
         String orderId = String.valueOf(paymentRequest.get("orderId").get(0));
         String orderAmount = String.valueOf(paymentRequest.get("orderAmount").get(0));
-        verifyOrderAmount(orderId, orderAmount);
+        String phoneNumber = String.valueOf(paymentRequest.get("customerPhone").get(0));
+        OrderEntity orderEntity = orderService.getOrder(orderId);
+        verifyOrderAmount(orderEntity, orderAmount);
+        updatePhoneNumber(phoneNumber,orderEntity);
         postData.put("appId", appId);
         postData.put("orderId", orderId);
         postData.put("orderAmount",orderAmount);
@@ -69,7 +70,7 @@ public class PaymentService {
         postData.put("orderNote", "Qwackly Payments");
         postData.put("customerName", String.valueOf(paymentRequest.get("customerName").get(0)));
         postData.put("customerEmail", String.valueOf(paymentRequest.get("customerEmail").get(0)));
-        postData.put("customerPhone", String.valueOf(paymentRequest.get("customerPhone").get(0)));
+        postData.put("customerPhone", phoneNumber);
         postData.put("returnUrl", callBackUrl);
         postData.put("notifyUrl", notifyUrl);
         String data = "";
@@ -138,11 +139,18 @@ public class PaymentService {
         orderProductService.updateOrderProductState(orderProductEntity,paymentStatus);
     }
 
-    private void verifyOrderAmount(String orderId, String orderAmount) {
-        OrderEntity orderEntity = orderService.getOrder(orderId);
+    private void verifyOrderAmount(OrderEntity orderEntity, String orderAmount) {
         ProductEntity productEntity = orderProductService.findByOrderEntity(orderEntity).getProductEntity();
         if (!productEntity.getFinalPrice().toString().equalsIgnoreCase(orderAmount)){
             throw new QwacklyException("Order amount does not match with the price of the product", ResponseStatus.FAILURE);
+        }
+    }
+
+    private void updatePhoneNumber( String phoneNumber, OrderEntity orderEntity) {
+        UserEntity userEntity = orderEntity.getUserEntity();
+        if (Objects.isNull(userEntity.getPhoneNumber()) || !userEntity.getPhoneNumber().equalsIgnoreCase(phoneNumber)){
+            userEntity.setPhoneNumber(phoneNumber);
+            userService.addUser(userEntity);
         }
     }
 }
