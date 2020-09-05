@@ -1,5 +1,6 @@
 package com.qwackly.user.service;
 
+import com.qwackly.user.enums.EmailStatus;
 import com.qwackly.user.enums.ResponseStatus;
 import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.*;
@@ -54,22 +55,29 @@ public class PaymentService {
     @Autowired
     UserService userService;
 
+    @Autowired
+    EmailService emailService;
+
 
     public String getSignature(MultiValueMap<String, String> paymentRequest) throws NoSuchAlgorithmException, InvalidKeyException {
         Map<String, String> postData = new HashMap<>();
         String orderId = String.valueOf(paymentRequest.get("orderId").get(0));
         String orderAmount = String.valueOf(paymentRequest.get("orderAmount").get(0));
         String phoneNumber = String.valueOf(paymentRequest.get("customerPhone").get(0));
+        String userId = String.valueOf(paymentRequest.get("customerId").get(0));
+        String customerName = String.valueOf(paymentRequest.get("customerName").get(0));
+        String customerEmail = String.valueOf(paymentRequest.get("customerEmail").get(0));
         OrderEntity orderEntity = orderService.getOrder(orderId);
         verifyOrderAmount(orderEntity, orderAmount);
+        verifyUser(orderEntity,userId,customerName,customerEmail);
         updatePhoneNumber(phoneNumber,orderEntity);
         postData.put("appId", appId);
         postData.put("orderId", orderId);
         postData.put("orderAmount",orderAmount);
         postData.put("orderCurrency", "INR");
         postData.put("orderNote", "Qwackly Payments");
-        postData.put("customerName", String.valueOf(paymentRequest.get("customerName").get(0)));
-        postData.put("customerEmail", String.valueOf(paymentRequest.get("customerEmail").get(0)));
+        postData.put("customerName", customerName);
+        postData.put("customerEmail", customerEmail);
         postData.put("customerPhone", phoneNumber);
         postData.put("returnUrl", callBackUrl);
         postData.put("notifyUrl", notifyUrl);
@@ -119,6 +127,7 @@ public class PaymentService {
         String reference = String.valueOf(cashfreeResponse.get("referenceId").get(0));
         String transactionMessage = String.valueOf(cashfreeResponse.get("txMsg").get(0));
         PaymentEntity existingPayment = paymentRepository.findByOrderEntity(orderEntity);
+        String orderAmount = String.valueOf(cashfreeResponse.get("orderAmount").get(0));
         if (Objects.nonNull(existingPayment)){
             existingPayment.setPaymentStatus(paymentStatus);
             existingPayment.setPaymentMode(paymentMode);
@@ -128,7 +137,7 @@ public class PaymentService {
         }
         else {
             paymentEntity.setOrderEntity(orderEntity);
-            paymentEntity.setAmount(String.valueOf(cashfreeResponse.get("orderAmount").get(0)));
+            paymentEntity.setAmount(orderAmount);
             paymentEntity.setPaymentMode(paymentMode);
             paymentEntity.setReferenceId(reference);
             paymentEntity.setPaymentStatus(paymentStatus);
@@ -137,6 +146,7 @@ public class PaymentService {
         }
         orderService.updateOrderState(orderEntity,paymentStatus);
         orderProductService.updateOrderProductState(orderProductEntity,paymentStatus);
+        addEmailEntity(orderEntity,orderAmount);
     }
 
     private void verifyOrderAmount(OrderEntity orderEntity, String orderAmount) {
@@ -146,11 +156,26 @@ public class PaymentService {
         }
     }
 
+    private void verifyUser(OrderEntity orderEntity, String userId, String firstName, String emailId){
+        UserEntity userEntity = orderEntity.getUserEntity();
+        if (!(userEntity.getId().toString().equalsIgnoreCase(userId) && userEntity.getFirstName().equalsIgnoreCase(firstName) && userEntity.getEmailId().equalsIgnoreCase(emailId))){
+            throw new QwacklyException("User Details does not match for this order", ResponseStatus.FAILURE);
+        }
+    }
+
     private void updatePhoneNumber( String phoneNumber, OrderEntity orderEntity) {
         UserEntity userEntity = orderEntity.getUserEntity();
         if (Objects.isNull(userEntity.getPhoneNumber()) || !userEntity.getPhoneNumber().equalsIgnoreCase(phoneNumber)){
             userEntity.setPhoneNumber(phoneNumber);
             userService.addUser(userEntity);
         }
+    }
+
+    private void addEmailEntity(OrderEntity orderEntity, String orderAmount){
+        UserEntity userEntity = orderEntity.getUserEntity();
+        String customerEmail = userEntity.getEmailId();
+        String customerName = userEntity.getFirstName();
+        EmailEntity emailEntity = new EmailEntity(orderEntity,orderAmount,customerEmail,customerName, EmailStatus.PENDING_SEND);
+        emailService.addEmailEntity(emailEntity);
     }
 }
