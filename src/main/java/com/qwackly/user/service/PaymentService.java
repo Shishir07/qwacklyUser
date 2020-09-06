@@ -5,6 +5,7 @@ import com.qwackly.user.enums.ResponseStatus;
 import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.*;
 import com.qwackly.user.repository.PaymentRepository;
+import com.qwackly.user.request.PaymentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -68,29 +69,18 @@ public class PaymentService {
         String customerName = String.valueOf(paymentRequest.get("customerName").get(0));
         String customerEmail = String.valueOf(paymentRequest.get("customerEmail").get(0));
         OrderEntity orderEntity = orderService.getOrder(orderId);
-        verifyOrderAmount(orderEntity, orderAmount);
-        verifyUser(orderEntity,userId,customerName,customerEmail);
-        updatePhoneNumber(phoneNumber,orderEntity);
-        postData.put("appId", appId);
-        postData.put("orderId", orderId);
-        postData.put("orderAmount",orderAmount);
-        postData.put("orderCurrency", "INR");
-        postData.put("orderNote", "Qwackly Payments");
-        postData.put("customerName", customerName);
-        postData.put("customerEmail", customerEmail);
-        postData.put("customerPhone", phoneNumber);
-        postData.put("returnUrl", callBackUrl);
-        postData.put("notifyUrl", notifyUrl);
-        String data = "";
-        SortedSet<String> keys = new TreeSet<String>(postData.keySet());
-        for (String key : keys) {
-            data = data + key + postData.get(key);
-        }
-        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-        SecretKeySpec secret_key_spec = new
-                SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
-        sha256_HMAC.init(secret_key_spec);
-        return Base64.getEncoder().encodeToString(sha256_HMAC.doFinal(data.getBytes()));
+        return getEncodedSignature(postData, orderId, orderAmount, phoneNumber, userId, customerName, customerEmail, orderEntity);
+    }
+
+    public String getSignature2(PaymentRequest paymentRequest, String userId) throws NoSuchAlgorithmException, InvalidKeyException {
+        Map<String, String> postData = new HashMap<>();
+        String orderId = paymentRequest.getOrderId();
+        String orderAmount = paymentRequest.getOrderAmount();
+        String phoneNumber = paymentRequest.getCustomerPhone();
+        String customerName = paymentRequest.getCustomerName();
+        String customerEmail = paymentRequest.getCustomerEmail();
+        OrderEntity orderEntity = orderService.getOrder(orderId);
+        return getEncodedSignature(postData, orderId, orderAmount, phoneNumber, userId, customerName, customerEmail, orderEntity);
     }
 
     public HttpEntity<MultiValueMap<String, String>> getPayload(MultiValueMap<String, String> paymentRequest, String signature) {
@@ -103,6 +93,26 @@ public class PaymentService {
         postData.add("customerName", String.valueOf(paymentRequest.get("customerName").get(0)));
         postData.add("customerEmail", String.valueOf(paymentRequest.get("customerEmail").get(0)));
         postData.add("customerPhone", String.valueOf(paymentRequest.get("customerPhone").get(0)));
+        postData.add("returnUrl", callBackUrl);
+        postData.add("notifyUrl", notifyUrl);
+        postData.add("signature", signature);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        return new HttpEntity<>(postData, headers);
+    }
+
+    public HttpEntity<MultiValueMap<String, String>> getPayload2(PaymentRequest paymentRequest, String signature) {
+        MultiValueMap<String, String> postData = new LinkedMultiValueMap<>();
+        postData.add("appId", appId);
+        postData.add("orderId", paymentRequest.getOrderId());
+        postData.add("orderAmount", paymentRequest.getOrderAmount());
+        postData.add("orderCurrency", "INR");
+        postData.add("orderNote", "Qwackly Payments");
+        postData.add("customerName", paymentRequest.getCustomerName());
+        postData.add("customerEmail", paymentRequest.getCustomerEmail());
+        postData.add("customerPhone", paymentRequest.getCustomerPhone());
         postData.add("returnUrl", callBackUrl);
         postData.add("notifyUrl", notifyUrl);
         postData.add("signature", signature);
@@ -147,6 +157,32 @@ public class PaymentService {
         orderService.updateOrderState(orderEntity,paymentStatus);
         orderProductService.updateOrderProductState(orderProductEntity,paymentStatus);
         addEmailEntity(orderEntity,orderAmount);
+    }
+
+    private String getEncodedSignature(Map<String, String> postData, String orderId, String orderAmount, String phoneNumber, String userId, String customerName, String customerEmail, OrderEntity orderEntity) throws NoSuchAlgorithmException, InvalidKeyException {
+        verifyOrderAmount(orderEntity, orderAmount);
+        verifyUser(orderEntity, userId, customerName, customerEmail);
+        updatePhoneNumber(phoneNumber, orderEntity);
+        postData.put("appId", appId);
+        postData.put("orderId", orderId);
+        postData.put("orderAmount", orderAmount);
+        postData.put("orderCurrency", "INR");
+        postData.put("orderNote", "Qwackly Payments");
+        postData.put("customerName", customerName);
+        postData.put("customerEmail", customerEmail);
+        postData.put("customerPhone", phoneNumber);
+        postData.put("returnUrl", callBackUrl);
+        postData.put("notifyUrl", notifyUrl);
+        String data = "";
+        SortedSet<String> keys = new TreeSet<String>(postData.keySet());
+        for (String key : keys) {
+            data = data + key + postData.get(key);
+        }
+        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secret_key_spec = new
+                SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
+        sha256_HMAC.init(secret_key_spec);
+        return Base64.getEncoder().encodeToString(sha256_HMAC.doFinal(data.getBytes()));
     }
 
     private void verifyOrderAmount(OrderEntity orderEntity, String orderAmount) {

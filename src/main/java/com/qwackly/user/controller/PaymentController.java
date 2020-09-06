@@ -1,9 +1,13 @@
 package com.qwackly.user.controller;
 
 
+import com.qwackly.user.model.EmailEntity;
 import com.qwackly.user.model.OrderEntity;
 import com.qwackly.user.model.PaymentEntity;
 import com.qwackly.user.request.PaymentRequest;
+import com.qwackly.user.security.CurrentUser;
+import com.qwackly.user.security.UserPrincipal;
+import com.qwackly.user.service.EmailService;
 import com.qwackly.user.service.OrderService;
 import com.qwackly.user.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -32,6 +37,9 @@ public class PaymentController {
     @Autowired
     PaymentService paymentService;
 
+    @Autowired
+    EmailService emailService;
+
 
     @PostMapping(value = "/payment", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<String> makePayment(@RequestBody MultiValueMap<String, String> paymentRequest, HttpServletResponse servletresponse) throws IOException {
@@ -42,6 +50,19 @@ public class PaymentController {
             response = paymentService.makePaymentCallToCashfree(request);
         } catch (Exception e){
            servletresponse.sendRedirect(failureRedirect);
+        }
+        return response;
+    }
+
+    @PostMapping(value = "/payment2",  consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> makePayment2(@RequestBody PaymentRequest paymentRequest, HttpServletResponse servletresponse, @CurrentUser UserPrincipal userPrincipal) throws IOException {
+        ResponseEntity<String> response = null;
+        try {
+            String signature = paymentService.getSignature2(paymentRequest,userPrincipal.getId().toString());
+            HttpEntity<MultiValueMap<String, String>> request = paymentService.getPayload2(paymentRequest, signature);
+            response = paymentService.makePaymentCallToCashfree(request);
+        } catch (Exception e){
+            servletresponse.sendRedirect(failureRedirect);
         }
         return response;
     }
