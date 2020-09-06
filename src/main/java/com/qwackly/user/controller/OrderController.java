@@ -84,7 +84,7 @@ public class OrderController {
         }
         OrderEntity order = orderService.findByProductIdIdAndUseId(productId,userId);
         if(Objects.nonNull(order)){
-            orderId = orderService.updateOrderEntitytIfPaymentInitiated(order);
+            orderId = order.getId();
         }
         else {
             orderId = orderIdgenerator.getUniqueOrderId();

@@ -84,16 +84,4 @@ public class OrderService {
         orderRepository.save(orderEntity);
     }
 
-    public String updateOrderEntitytIfPaymentInitiated(OrderEntity order) {
-        if (!order.getState().equals(OrderStatus.ADDED)){
-            String orderId = orderIdgenerator.getUniqueOrderId();
-            order.setId(orderId);
-            OrderProductEntity orderProduct = orderProductService.findByOrderEntity(order);
-            orderProduct.setOrderEntity(order);
-            addOrder(order);
-            orderProductService.addOrderProduct(orderProduct);
-        }
-        return order.getId();
-    }
-
 }

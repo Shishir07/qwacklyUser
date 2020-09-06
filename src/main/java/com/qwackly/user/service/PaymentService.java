@@ -35,6 +35,9 @@ public class PaymentService {
     @Value("${cashfree.postUrl}")
     private String postUrl;
 
+    @Value("${cashfree.paymentLink}")
+    private String infoLinkUrl;
+
     @Value("${cashfree.callbackUrl}")
     private String callBackUrl;
 
@@ -64,7 +67,6 @@ public class PaymentService {
     public void verifyDetails(PaymentRequest paymentRequest, String userId) {
         String orderId = paymentRequest.getOrderId();
         OrderEntity orderEntity = orderService.getOrder(orderId);
-        updateStateToPendingPayment(orderEntity);
         verifyOrderAmount(orderEntity, paymentRequest.getOrderAmount());
         verifyUser(orderEntity, userId, paymentRequest.getCustomerName(), paymentRequest.getCustomerEmail());
         updatePhoneNumber(paymentRequest.getCustomerPhone(), orderEntity);
@@ -90,10 +92,15 @@ public class PaymentService {
         return new HttpEntity<>(postData, headers);
     }
 
-    public CashFreeCreateOrderResponse createOrderInCashfree(HttpEntity<MultiValueMap<String, String>> request) {
+    public ResponseEntity<String> createOrderInCashfree(HttpEntity<MultiValueMap<String, String>> request, String orderId) {
+        OrderEntity orderEntity = orderService.getOrder(orderId);
+        ResponseEntity<String> response;
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.postForEntity(postUrl, request, String.class);
-        return new Gson().fromJson(response.getBody(), CashFreeCreateOrderResponse.class);
+        if (orderEntity.getState().equals(OrderStatus.PENDING_PAYMENT))
+            response = restTemplate.postForEntity(infoLinkUrl, request, String.class);
+        else
+            response = restTemplate.postForEntity(postUrl, request, String.class);
+        return response;
     }
 
     public void savePayment(MultiValueMap<String, String> cashfreeResponse){
@@ -149,7 +156,8 @@ public class PaymentService {
         }
     }
 
-    private void updateStateToPendingPayment(OrderEntity orderEntity) {
+    public void updateStateToPendingPayment(String orderId) {
+        OrderEntity orderEntity = orderService.getOrder(orderId);
         orderEntity.setState(OrderStatus.PENDING_PAYMENT);
         OrderProductEntity orderProductEntity = orderProductService.findByOrderEntity(orderEntity);
         orderProductEntity.setState(PENNDING_PAYMENT);

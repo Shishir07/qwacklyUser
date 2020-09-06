@@ -1,6 +1,7 @@
 package com.qwackly.user.controller;
 
 
+import com.google.gson.Gson;
 import com.qwackly.user.model.EmailEntity;
 import com.qwackly.user.model.OrderEntity;
 import com.qwackly.user.model.PaymentEntity;
@@ -46,9 +47,15 @@ public class PaymentController {
 
     @PostMapping(value = "/payment",  consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CashFreeCreateOrderResponse> makePayment(@RequestBody PaymentRequest paymentRequest, @CurrentUser UserPrincipal userPrincipal) {
+        CashFreeCreateOrderResponse cashFreeCreateOrderResponse = new CashFreeCreateOrderResponse();
         paymentService.verifyDetails(paymentRequest,userPrincipal.getId().toString());
         HttpEntity<MultiValueMap<String, String>> request = paymentService.getPayload(paymentRequest);
-        return new ResponseEntity<>(paymentService.createOrderInCashfree(request), HttpStatus.OK);
+        ResponseEntity<String> response = paymentService.createOrderInCashfree(request, paymentRequest.getOrderId());
+        if (response.getStatusCode().equals(HttpStatus.OK)){
+            paymentService.updateStateToPendingPayment(paymentRequest.getOrderId());
+            cashFreeCreateOrderResponse = new Gson().fromJson(response.getBody(), CashFreeCreateOrderResponse.class);
+        }
+        return new ResponseEntity<>(cashFreeCreateOrderResponse, HttpStatus.OK);
     }
 
     @PostMapping(value = "/payment/callback", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
