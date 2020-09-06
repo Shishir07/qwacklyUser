@@ -61,15 +61,13 @@ public class PaymentService {
 
     private static final String PENNDING_PAYMENT = "PENDING_PAYMENT";
 
-    public String getSignature(PaymentRequest paymentRequest, String userId) throws NoSuchAlgorithmException, InvalidKeyException {
-        Map<String, String> postData = new HashMap<>();
+    public void verifyDetails(PaymentRequest paymentRequest, String userId) {
         String orderId = paymentRequest.getOrderId();
-        String orderAmount = paymentRequest.getOrderAmount();
-        String phoneNumber = paymentRequest.getCustomerPhone();
-        String customerName = paymentRequest.getCustomerName();
-        String customerEmail = paymentRequest.getCustomerEmail();
         OrderEntity orderEntity = orderService.getOrder(orderId);
-        return getEncodedSignature(postData, orderId, orderAmount, phoneNumber, userId, customerName, customerEmail, orderEntity);
+        updateStateToPendingPayment(orderEntity);
+        verifyOrderAmount(orderEntity, paymentRequest.getOrderAmount());
+        verifyUser(orderEntity, userId, paymentRequest.getCustomerName(), paymentRequest.getCustomerEmail());
+        updatePhoneNumber(paymentRequest.getCustomerPhone(), orderEntity);
     }
 
     public HttpEntity<MultiValueMap<String, String>> getPayload(PaymentRequest paymentRequest) {
@@ -127,33 +125,6 @@ public class PaymentService {
         orderService.updateOrderState(orderEntity,paymentStatus);
         orderProductService.updateOrderProductState(orderProductEntity,paymentStatus);
         addEmailEntity(orderEntity,orderAmount);
-    }
-
-    private String getEncodedSignature(Map<String, String> postData, String orderId, String orderAmount, String phoneNumber, String userId, String customerName, String customerEmail, OrderEntity orderEntity) throws NoSuchAlgorithmException, InvalidKeyException {
-        updateStateToPendingPayment(orderEntity);
-        verifyOrderAmount(orderEntity, orderAmount);
-        //verifyUser(orderEntity, userId, customerName, customerEmail);
-        updatePhoneNumber(phoneNumber, orderEntity);
-        postData.put("appId", appId);
-        postData.put("orderId", orderId);
-        postData.put("orderAmount", orderAmount);
-        postData.put("orderCurrency", "INR");
-        postData.put("orderNote", "Qwackly Payments");
-        postData.put("customerName", customerName);
-        postData.put("customerEmail", customerEmail);
-        postData.put("customerPhone", phoneNumber);
-        postData.put("returnUrl", callBackUrl);
-        postData.put("notifyUrl", notifyUrl);
-        String data = "";
-        SortedSet<String> keys = new TreeSet<String>(postData.keySet());
-        for (String key : keys) {
-            data = data + key + postData.get(key);
-        }
-        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-        SecretKeySpec secret_key_spec = new
-                SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
-        sha256_HMAC.init(secret_key_spec);
-        return Base64.getEncoder().encodeToString(sha256_HMAC.doFinal(data.getBytes()));
     }
 
     private void verifyOrderAmount(OrderEntity orderEntity, String orderAmount) {
