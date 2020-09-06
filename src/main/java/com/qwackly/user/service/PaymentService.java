@@ -1,6 +1,7 @@
 package com.qwackly.user.service;
 
 import com.qwackly.user.enums.EmailStatus;
+import com.qwackly.user.enums.OrderStatus;
 import com.qwackly.user.enums.ResponseStatus;
 import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.*;
@@ -58,6 +59,8 @@ public class PaymentService {
 
     @Autowired
     EmailService emailService;
+
+    private static final String PENNDING_PAYMENT = "PENDING_PAYMENT";
 
 
     public String getSignature(MultiValueMap<String, String> paymentRequest) throws NoSuchAlgorithmException, InvalidKeyException {
@@ -160,6 +163,7 @@ public class PaymentService {
     }
 
     private String getEncodedSignature(Map<String, String> postData, String orderId, String orderAmount, String phoneNumber, String userId, String customerName, String customerEmail, OrderEntity orderEntity) throws NoSuchAlgorithmException, InvalidKeyException {
+        updateStateToPendingPayment(orderEntity);
         verifyOrderAmount(orderEntity, orderAmount);
         verifyUser(orderEntity, userId, customerName, customerEmail);
         updatePhoneNumber(phoneNumber, orderEntity);
@@ -205,6 +209,14 @@ public class PaymentService {
             userEntity.setPhoneNumber(phoneNumber);
             userService.addUser(userEntity);
         }
+    }
+
+    private void updateStateToPendingPayment(OrderEntity orderEntity) {
+        orderEntity.setState(OrderStatus.PENDING_PAYMENT);
+        OrderProductEntity orderProductEntity = orderProductService.findByOrderEntity(orderEntity);
+        orderProductEntity.setState(PENNDING_PAYMENT);
+        orderService.addOrder(orderEntity);
+        orderProductService.addOrderProduct(orderProductEntity);
     }
 
     private void addEmailEntity(OrderEntity orderEntity, String orderAmount){

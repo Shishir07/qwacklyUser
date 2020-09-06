@@ -1,6 +1,7 @@
 package com.qwackly.user.enums;
 
 public enum OrderStatus {
+    ADDED,
     PENDING_PAYMENT,
     PAYMENT_INITIATED,
     PAYMENT_COMPLETED,

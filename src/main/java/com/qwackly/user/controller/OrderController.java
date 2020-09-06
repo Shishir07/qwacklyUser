@@ -84,12 +84,12 @@ public class OrderController {
         }
         OrderEntity order = orderService.findByProductIdIdAndUseId(productId,userId);
         if(Objects.nonNull(order)){
-            orderId= order.getId();
+            orderId = orderService.updateOrderEntitytIfPaymentFailed(order);
         }
         else {
             orderId = orderIdgenerator.getUniqueOrderId();
-            OrderEntity orderEntity = new OrderEntity(orderId, userEntity, OrderStatus.PENDING_PAYMENT);
-            OrderProductEntity orderProductEntity = new OrderProductEntity(PENNDING_PAYMENT, orderEntity, productEntity);
+            OrderEntity orderEntity = new OrderEntity(orderId, userEntity, OrderStatus.ADDED);
+            OrderProductEntity orderProductEntity = new OrderProductEntity(ADDED, orderEntity, productEntity);
             try {
                 orderProductService.addOrderProduct(orderProductEntity);
                 orderService.addOrder(orderEntity);

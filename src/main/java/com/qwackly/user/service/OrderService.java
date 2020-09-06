@@ -3,10 +3,12 @@ package com.qwackly.user.service;
 import com.qwackly.user.enums.OrderStatus;
 import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.OrderEntity;
+import com.qwackly.user.model.OrderProductEntity;
 import com.qwackly.user.model.ProductEntity;
 import com.qwackly.user.model.UserEntity;
 import com.qwackly.user.repository.OrderRepository;
 import com.qwackly.user.enums.ResponseStatus;
+import com.qwackly.user.util.OrderIdgenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,12 @@ public class OrderService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    OrderIdgenerator orderIdgenerator;
+
+    @Autowired
+    OrderProductService orderProductService;
 
     public List<OrderEntity> getAllOrders(){
         return orderRepository.findAll();
@@ -74,6 +82,18 @@ public class OrderService {
             orderEntity.setState(OrderStatus.PAYMENT_FAILED);
         }
         orderRepository.save(orderEntity);
+    }
+
+    public String updateOrderEntitytIfPaymentFailed(OrderEntity order) {
+        if (order.getState().equals(OrderStatus.PAYMENT_FAILED)){
+            String orderId = orderIdgenerator.getUniqueOrderId();
+            order.setId(orderId);
+            OrderProductEntity orderProduct = orderProductService.findByOrderEntity(order);
+            orderProduct.setOrderEntity(order);
+            addOrder(order);
+            orderProductService.addOrderProduct(orderProduct);
+        }
+        return order.getId();
     }
 
 }
