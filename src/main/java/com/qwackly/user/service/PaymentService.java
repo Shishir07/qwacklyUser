@@ -72,7 +72,7 @@ public class PaymentService {
         return getEncodedSignature(postData, orderId, orderAmount, phoneNumber, userId, customerName, customerEmail, orderEntity);
     }
 
-    public HttpEntity<MultiValueMap<String, String>> getPayload(PaymentRequest paymentRequest, String signature) {
+    public HttpEntity<MultiValueMap<String, String>> getPayload(PaymentRequest paymentRequest) {
         MultiValueMap<String, String> postData = new LinkedMultiValueMap<>();
         postData.add("appId", appId);
         postData.add("orderId", paymentRequest.getOrderId());
@@ -84,7 +84,7 @@ public class PaymentService {
         postData.add("customerPhone", paymentRequest.getCustomerPhone());
         postData.add("returnUrl", callBackUrl);
         postData.add("notifyUrl", notifyUrl);
-        postData.add("signature", signature);
+        postData.add("secretKey", secretKey);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -94,7 +94,7 @@ public class PaymentService {
 
     public CashFreeCreateOrderResponse createOrderInCashfree(HttpEntity<MultiValueMap<String, String>> request) {
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(postUrl, HttpMethod.POST, request, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(postUrl, request, String.class);
         return new Gson().fromJson(response.getBody(), CashFreeCreateOrderResponse.class);
     }
 

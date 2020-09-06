@@ -41,7 +41,7 @@ public class PaymentController {
     @PostMapping(value = "/payment",  consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CashFreeCreateOrderResponse> makePayment(@RequestBody PaymentRequest paymentRequest, @CurrentUser UserPrincipal userPrincipal) throws  InvalidKeyException, NoSuchAlgorithmException {
         String signature = paymentService.getSignature(paymentRequest,userPrincipal.getId().toString());
-        HttpEntity<MultiValueMap<String, String>> request = paymentService.getPayload(paymentRequest, signature);
+        HttpEntity<MultiValueMap<String, String>> request = paymentService.getPayload(paymentRequest);
         return new ResponseEntity<>(paymentService.createOrderInCashfree(request), HttpStatus.OK);
     }
 
