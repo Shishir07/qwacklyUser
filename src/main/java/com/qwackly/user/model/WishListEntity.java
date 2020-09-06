@@ -2,6 +2,7 @@ package com.qwackly.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -26,7 +27,11 @@ public class WishListEntity {
     private String status;
     @CreationTimestamp
     @JsonIgnore
-    private Timestamp createdTimestamp, modifiedTimestamp;
+    private Timestamp createdTimestamp;
+
+    @UpdateTimestamp
+    @JsonIgnore
+    private Timestamp  modifiedTimestamp;
 
     public Integer getId() {
         return id;

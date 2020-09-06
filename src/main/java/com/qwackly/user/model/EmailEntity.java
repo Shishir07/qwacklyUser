@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -35,7 +36,10 @@ public class EmailEntity {
     private EmailStatus status;
 
     @CreationTimestamp
-    private Timestamp createdTimestamp,modifiedTimestamp;
+    private Timestamp createdTimestamp;
+
+    @UpdateTimestamp
+    private Timestamp  modifiedTimestamp;
 
     public EmailEntity (OrderEntity orderEntity, String orderAmount, String customerEmail, String customerName ,EmailStatus emailStatus){
         this.orderEntity = orderEntity;

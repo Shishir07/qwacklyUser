@@ -2,6 +2,7 @@ package com.qwackly.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -18,7 +19,11 @@ public class NgoEntity {
     private String description;
     @CreationTimestamp
     @JsonIgnore
-    private Timestamp createdTimestamp,modifiedTimestamp;
+    private Timestamp createdTimestamp;
+
+    @UpdateTimestamp
+    @JsonIgnore
+    private Timestamp  modifiedTimestamp;
 
     public Integer getId() {
         return id;

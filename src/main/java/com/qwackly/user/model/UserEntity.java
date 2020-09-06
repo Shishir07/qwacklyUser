@@ -6,6 +6,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -51,7 +52,11 @@ public class UserEntity {
 
     @CreationTimestamp
     @JsonIgnore
-    private Timestamp createdTimestamp, modifiedTimestamp;
+    private Timestamp createdTimestamp;
+
+    @UpdateTimestamp
+    @JsonIgnore
+    private Timestamp  modifiedTimestamp;
 
     public Integer getId() {
         return id;

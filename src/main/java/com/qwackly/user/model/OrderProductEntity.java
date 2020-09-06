@@ -2,6 +2,7 @@ package com.qwackly.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -24,7 +25,9 @@ public class OrderProductEntity {
     @JoinColumn(name = "productId")
     private ProductEntity productEntity;
     @CreationTimestamp
-    private Timestamp createdTimestamp, modifiedTimestamp;
+    private Timestamp createdTimestamp;
+    @UpdateTimestamp
+    private Timestamp  modifiedTimestamp;
 
     public OrderProductEntity(){
 

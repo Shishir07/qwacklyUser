@@ -2,6 +2,7 @@ package com.qwackly.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,7 +24,11 @@ public class CelebEntity {
 
     @CreationTimestamp
     @JsonIgnore
-    private Date createdTimestamp, modifiedTimestamp;
+    private Date createdTimestamp;
+
+    @UpdateTimestamp
+    @JsonIgnore
+    private Date modifiedTimestamp;
 
     public Integer getId() {
         return id;

@@ -60,7 +60,11 @@ public class ProductEntity {
 
     @CreationTimestamp
     @JsonIgnore
-    private Timestamp createdTimestamp,modifiedTimestamp;
+    private Timestamp createdTimestamp;
+
+    @UpdateTimestamp
+    @JsonIgnore
+    private Timestamp  modifiedTimestamp;
 
     private String productType;
 

@@ -3,6 +3,7 @@ package com.qwackly.user.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qwackly.user.enums.OrderStatus;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -23,7 +24,10 @@ public class OrderEntity {
     @JoinColumn(name = "userId")
     private UserEntity userEntity;
     @CreationTimestamp
-    private Timestamp createdTimestamp,modifiedTimestamp;
+    private Timestamp createdTimestamp;
+
+    @UpdateTimestamp
+    private Timestamp  modifiedTimestamp;
 
     public OrderEntity (String id,UserEntity userEntity,OrderStatus state){
         this.id=id;
