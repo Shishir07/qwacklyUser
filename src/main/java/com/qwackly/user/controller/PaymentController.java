@@ -37,9 +37,15 @@ public class PaymentController {
     @Autowired
     EmailService emailService;
 
+    @Value("${qwackly.successRedirect}")
+    private String successRedirect;
+
+    @Value("${qwackly.failureRedirect}")
+    private String failureRedirect;
+
 
     @PostMapping(value = "/payment",  consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CashFreeCreateOrderResponse> makePayment(@RequestBody PaymentRequest paymentRequest, @CurrentUser UserPrincipal userPrincipal) throws  InvalidKeyException, NoSuchAlgorithmException {
+    public ResponseEntity<CashFreeCreateOrderResponse> makePayment(@RequestBody PaymentRequest paymentRequest, @CurrentUser UserPrincipal userPrincipal) {
         paymentService.verifyDetails(paymentRequest,userPrincipal.getId().toString());
         HttpEntity<MultiValueMap<String, String>> request = paymentService.getPayload(paymentRequest);
         return new ResponseEntity<>(paymentService.createOrderInCashfree(request), HttpStatus.OK);
@@ -48,6 +54,12 @@ public class PaymentController {
     @PostMapping(value = "/payment/callback", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public void cashfreeCallback(@RequestBody MultiValueMap<String, String> cashfreeResponse, HttpServletResponse response) throws IOException {
         paymentService.savePayment(cashfreeResponse);
+        if ("SUCCESS".equalsIgnoreCase(String.valueOf(cashfreeResponse.get("txStatus").get(0)))){
+            response.sendRedirect(successRedirect);
+        }
+        else{
+            response.sendRedirect(failureRedirect);
+        }
     }
 
     @PostMapping(value = "/payment/notify", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
