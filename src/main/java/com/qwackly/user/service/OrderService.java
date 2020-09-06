@@ -84,8 +84,8 @@ public class OrderService {
         orderRepository.save(orderEntity);
     }
 
-    public String updateOrderEntitytIfPaymentFailed(OrderEntity order) {
-        if (order.getState().equals(OrderStatus.PAYMENT_FAILED)){
+    public String updateOrderEntitytIfPaymentInitiated(OrderEntity order) {
+        if (!order.getState().equals(OrderStatus.ADDED)){
             String orderId = orderIdgenerator.getUniqueOrderId();
             order.setId(orderId);
             OrderProductEntity orderProduct = orderProductService.findByOrderEntity(order);

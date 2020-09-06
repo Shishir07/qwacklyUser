@@ -7,12 +7,10 @@ import com.qwackly.user.exception.QwacklyException;
 import com.qwackly.user.model.*;
 import com.qwackly.user.repository.PaymentRepository;
 import com.qwackly.user.request.PaymentRequest;
+import com.qwackly.user.response.CashFreeCreateOrderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -23,6 +21,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import com.google.gson.*;
 
 @Service
 public class PaymentService {
@@ -62,20 +61,7 @@ public class PaymentService {
 
     private static final String PENNDING_PAYMENT = "PENDING_PAYMENT";
 
-
-    public String getSignature(MultiValueMap<String, String> paymentRequest) throws NoSuchAlgorithmException, InvalidKeyException {
-        Map<String, String> postData = new HashMap<>();
-        String orderId = String.valueOf(paymentRequest.get("orderId").get(0));
-        String orderAmount = String.valueOf(paymentRequest.get("orderAmount").get(0));
-        String phoneNumber = String.valueOf(paymentRequest.get("customerPhone").get(0));
-        String userId = String.valueOf(paymentRequest.get("customerId").get(0));
-        String customerName = String.valueOf(paymentRequest.get("customerName").get(0));
-        String customerEmail = String.valueOf(paymentRequest.get("customerEmail").get(0));
-        OrderEntity orderEntity = orderService.getOrder(orderId);
-        return getEncodedSignature(postData, orderId, orderAmount, phoneNumber, userId, customerName, customerEmail, orderEntity);
-    }
-
-    public String getSignature2(PaymentRequest paymentRequest, String userId) throws NoSuchAlgorithmException, InvalidKeyException {
+    public String getSignature(PaymentRequest paymentRequest, String userId) throws NoSuchAlgorithmException, InvalidKeyException {
         Map<String, String> postData = new HashMap<>();
         String orderId = paymentRequest.getOrderId();
         String orderAmount = paymentRequest.getOrderAmount();
@@ -86,27 +72,7 @@ public class PaymentService {
         return getEncodedSignature(postData, orderId, orderAmount, phoneNumber, userId, customerName, customerEmail, orderEntity);
     }
 
-    public HttpEntity<MultiValueMap<String, String>> getPayload(MultiValueMap<String, String> paymentRequest, String signature) {
-        MultiValueMap<String, String> postData = new LinkedMultiValueMap<>();
-        postData.add("appId", appId);
-        postData.add("orderId", String.valueOf(paymentRequest.get("orderId").get(0)));
-        postData.add("orderAmount", String.valueOf(paymentRequest.get("orderAmount").get(0)));
-        postData.add("orderCurrency", "INR");
-        postData.add("orderNote", "Qwackly Payments");
-        postData.add("customerName", String.valueOf(paymentRequest.get("customerName").get(0)));
-        postData.add("customerEmail", String.valueOf(paymentRequest.get("customerEmail").get(0)));
-        postData.add("customerPhone", String.valueOf(paymentRequest.get("customerPhone").get(0)));
-        postData.add("returnUrl", callBackUrl);
-        postData.add("notifyUrl", notifyUrl);
-        postData.add("signature", signature);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        return new HttpEntity<>(postData, headers);
-    }
-
-    public HttpEntity<MultiValueMap<String, String>> getPayload2(PaymentRequest paymentRequest, String signature) {
+    public HttpEntity<MultiValueMap<String, String>> getPayload(PaymentRequest paymentRequest, String signature) {
         MultiValueMap<String, String> postData = new LinkedMultiValueMap<>();
         postData.add("appId", appId);
         postData.add("orderId", paymentRequest.getOrderId());
@@ -126,9 +92,10 @@ public class PaymentService {
         return new HttpEntity<>(postData, headers);
     }
 
-    public ResponseEntity<String> makePaymentCallToCashfree(HttpEntity<MultiValueMap<String, String>> request) {
+    public CashFreeCreateOrderResponse createOrderInCashfree(HttpEntity<MultiValueMap<String, String>> request) {
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.postForEntity(postUrl, request, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(postUrl, HttpMethod.POST, request, String.class);
+        return new Gson().fromJson(response.getBody(), CashFreeCreateOrderResponse.class);
     }
 
     public void savePayment(MultiValueMap<String, String> cashfreeResponse){
@@ -165,7 +132,7 @@ public class PaymentService {
     private String getEncodedSignature(Map<String, String> postData, String orderId, String orderAmount, String phoneNumber, String userId, String customerName, String customerEmail, OrderEntity orderEntity) throws NoSuchAlgorithmException, InvalidKeyException {
         updateStateToPendingPayment(orderEntity);
         verifyOrderAmount(orderEntity, orderAmount);
-        verifyUser(orderEntity, userId, customerName, customerEmail);
+        //verifyUser(orderEntity, userId, customerName, customerEmail);
         updatePhoneNumber(phoneNumber, orderEntity);
         postData.put("appId", appId);
         postData.put("orderId", orderId);
