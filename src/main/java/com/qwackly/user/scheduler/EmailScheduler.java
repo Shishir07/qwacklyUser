@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
-import java.io.IOException;
 import java.util.List;
 
 @Component
@@ -30,7 +29,7 @@ public class EmailScheduler {
         this.logger=logger;
     }
 
-    @Scheduled(cron="0 0/1 * * * ?")
+    @Scheduled(cron = "0 * * * * ?")
     public void sendEmail() throws MessagingException {
         List<EmailEntity> emailEntityList = emailService.findAllByStatus(EmailStatus.PENDING_SEND);
         for (EmailEntity emailEntity : emailEntityList){
