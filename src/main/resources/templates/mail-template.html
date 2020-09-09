@@ -20,12 +20,13 @@
 <p th:text="${'Hello ' + name}"></p>
 
 <p>
-    Wow! You've successfully bought happiness for your loved one!
+    This is to confirm that the payment of INR <b><span th:text="${orderamount}"></span></b> to Qwackly (www.qwackly.com) has been successfully made.
 </p>
 
 <p>
-    This is to confirm that your payment of INR <b><span th:text="${orderamount}"></span></b> to Qwackly (development.qwackly.com) has been successfully made.
+   Please reply to this email with the details, what is the occassion and whom is this wish for and some more details for this request.
 </p>
+
 <p>
     The associated orderId and date of purchase are <b><span th:text="${orderid}"></span></b>  and </b><span th:text="${#dates.format(#dates.createNow(), 'dd MMM yyyy HH:mm')}"></span></b> respectively.
 </p>
@@ -34,12 +35,11 @@
     You can find <b>your orders</b> by clicking on the link below.
 </p>
 <p>
-    <a href="http://development.qwackly.in/orderDetails" height="50" width="200">Order Details</a>
+    <a href="http://qwackly.in/orderDetails" height="50" width="200">Order Details</a>
 </p>
 <p>
     Regards, <br />
     <em th:text="${sign}"></em>
-<!--<p th:text="${location}"></p>-->
 </p>
 </body>
 </html>
