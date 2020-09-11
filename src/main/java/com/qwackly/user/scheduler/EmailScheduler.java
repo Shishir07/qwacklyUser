@@ -34,6 +34,8 @@ public class EmailScheduler {
         List<EmailEntity> emailEntityList = emailService.findAllByStatus(EmailStatus.PENDING_SEND);
         for (EmailEntity emailEntity : emailEntityList){
             emailService.sendmail(emailEntity);
+            emailEntity.setStatus(EmailStatus.SENT);
+            emailService.addEmailEntity(emailEntity);
         }
     }
 }

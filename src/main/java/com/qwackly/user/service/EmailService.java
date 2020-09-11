@@ -106,9 +106,8 @@ public class EmailService {
         String html = templateEngine.process("mail-template", context);
 
         helper.setTo(emailEntity.getCustomerEmail());
-        String[] bccEmails = {"abhinav@qwackly.com"/*,"shishir@qwackly.com"*/};
+        String[] bccEmails = {"abhinav@qwackly.com","shishir@qwackly.com"};
         helper.setBcc(bccEmails);
-        //helper.setCc("shishirsandeep7@gmail.com");
         helper.setText(html, true);
         helper.setSubject("Qwackly Order Details");
         helper.setFrom("celebs@qwackly.com");
