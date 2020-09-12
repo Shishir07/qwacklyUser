@@ -18,7 +18,7 @@ public class ProductService {
     }
 
     public List<ProductEntity> getAllAvailableProducts(){
-        return productRepository.findByNoOfProductsGreaterThan(0);
+        return productRepository.findByNoOfProductsGreaterThanOrderByPriceDesc(0);
     }
 
     public ProductEntity getProduct(Integer id){

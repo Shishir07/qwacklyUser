@@ -110,7 +110,7 @@ public class EmailService {
         helper.setBcc(bccEmails);
         helper.setText(html, true);
         helper.setSubject("Qwackly Order Details");
-        helper.setFrom("celebs@qwackly.com");
+        helper.setFrom("admin@qwackly.com");
 
         emailSender.send(message);
     }
