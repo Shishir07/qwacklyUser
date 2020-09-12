@@ -2,6 +2,7 @@ package com.qwackly.user.scheduler;
 
 import com.qwackly.user.aspects.LoggerWrapper;
 import com.qwackly.user.enums.EmailStatus;
+import com.qwackly.user.enums.OrderStatus;
 import com.qwackly.user.model.EmailEntity;
 import com.qwackly.user.service.EmailService;
 import com.qwackly.user.service.OrderService;
@@ -33,7 +34,8 @@ public class EmailScheduler {
     public void sendEmail() throws MessagingException {
         List<EmailEntity> emailEntityList = emailService.findAllByStatus(EmailStatus.PENDING_SEND);
         for (EmailEntity emailEntity : emailEntityList){
-            emailService.sendmail(emailEntity);
+            if (emailEntity.getOrderEntity().getState().equals(OrderStatus.PAYMENT_COMPLETED))
+                emailService.sendmail(emailEntity);
             emailEntity.setStatus(EmailStatus.SENT);
             emailService.addEmailEntity(emailEntity);
         }
