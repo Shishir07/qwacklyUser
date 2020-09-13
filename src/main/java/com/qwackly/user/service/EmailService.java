@@ -90,7 +90,7 @@ public class EmailService {
         Transport.send(msg);
     }
 
-    public void sendmail(EmailEntity emailEntity) throws MessagingException {
+    public void sendmail(EmailEntity emailEntity, String details) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message,
                 MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
@@ -98,6 +98,7 @@ public class EmailService {
         Context context = new Context();
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("name", emailEntity.getCustomerName());
+        model.put("requiredDetails",details);
         model.put("orderid", emailEntity.getOrderEntity().getId());
         model.put("orderamount",emailEntity.getOrderAmount());
         model.put("sign", "Team Qwackly");
