@@ -29,10 +29,10 @@ public class OrderPriceEntity {
     @Formula("price - discount")
     private Integer discountedprice;
 
-    @Formula("0.18 * discountedprice")
+    @Formula("0.18 * (price - discount)")
     private Integer gst;
 
-    @Formula("1.18*discountedprice")
+    @Formula("1.18*(price - discount)")
     private Integer finalPrice;
 
     @CreationTimestamp
