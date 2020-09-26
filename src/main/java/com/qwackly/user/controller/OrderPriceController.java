@@ -34,7 +34,7 @@ public class OrderPriceController {
     UserService userService;
 
     @RequestMapping(value = "/price/orders/{id}" , method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrderPriceEntity> getOrders(@PathVariable String id, @CurrentUser UserPrincipal userPrincipal){
+    public ResponseEntity<OrderPriceEntity> getPrice(@PathVariable String id, @CurrentUser UserPrincipal userPrincipal){
         OrderEntity orderEntity = orderService.getOrder(id);
         validateUser(userPrincipal, orderEntity);
         OrderPriceEntity orderPriceEntity = orderPriceService.findByOrdeEntity(orderEntity);
