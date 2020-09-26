@@ -30,6 +30,7 @@ public class CouponService {
     @Autowired
     OrderPriceService orderPriceService;
 
+
     public void addCoupon(CouponEntity couponEntity){
         couponRepository.save(couponEntity);
     }
@@ -44,12 +45,10 @@ public class CouponService {
         OrderEntity orderEntity = orderService.getOrder(orderId);
         validateUser(userPrincipal, orderEntity);
         CouponEntity couponEntity =findByName(couponName);
-        Boolean isCouponValid = isValidCoupon(couponEntity);
-        if (isCouponValid) {
-            addDiscount(orderEntity, couponEntity);
-        }
+        validateCoupon(couponEntity);
+        addDiscount(orderEntity, couponEntity);
         SuccessResponse successResponse = new SuccessResponse();
-        successResponse.setSuccess(isCouponValid);
+        successResponse.setSuccess(true);
         return  successResponse;
     }
 
@@ -60,8 +59,9 @@ public class CouponService {
         }
     }
 
-    private boolean isValidCoupon(CouponEntity couponEntity){
-        return Objects.isNull(couponEntity) ? false : true;
+    private void validateCoupon(CouponEntity couponEntity){
+        if (Objects.isNull(couponEntity))
+            throw new QwacklyException("Invalid Coupon", ResponseStatus.FAILURE);
     }
 
     private void addDiscount(OrderEntity orderEntity, CouponEntity couponEntity) {
