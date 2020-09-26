@@ -28,7 +28,7 @@ public class OrderPriceEntity {
     private Integer discount = 0;
 
     @Formula("price - discount")
-    private Integer discountedprice;
+    private Integer discountedPrice;
 
     @Formula("0.18 * (price - discount)")
     private Integer gst;
@@ -92,12 +92,12 @@ public class OrderPriceEntity {
         this.discount = discount;
     }
 
-    public Integer getDiscountedprice() {
-        return discountedprice;
+    public Integer getDiscountedPrice() {
+        return discountedPrice;
     }
 
-    public void setDiscountedprice(Integer discountedprice) {
-        this.discountedprice = discountedprice;
+    public void setDiscountedPrice(Integer discountedPrice) {
+        this.discountedPrice = discountedPrice;
     }
 
     public Integer getGst() {
