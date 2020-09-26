@@ -17,6 +17,7 @@ public class OrderPriceEntity {
     private Integer id;
     @OneToOne
     @JoinColumn(name = "orderId")
+    @JsonIgnore
     private OrderEntity orderEntity;
     @Column(name = "price")
     private Integer price;
