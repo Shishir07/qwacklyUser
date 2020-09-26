@@ -62,6 +62,9 @@ public class PaymentService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    OrderPriceService orderPriceService;
+
     private static final String PENNDING_PAYMENT = "PENDING_PAYMENT";
 
     public void verifyDetails(PaymentRequest paymentRequest, String userId) {
@@ -135,8 +138,8 @@ public class PaymentService {
     }
 
     private void verifyOrderAmount(OrderEntity orderEntity, String orderAmount) {
-        ProductEntity productEntity = orderProductService.findByOrderEntity(orderEntity).getProductEntity();
-        if (!productEntity.getFinalPrice().toString().equalsIgnoreCase(orderAmount)){
+        OrderPriceEntity priceEntity = orderPriceService.findByOrdeEntity(orderEntity);
+        if (!priceEntity.getFinalPrice().toString().equalsIgnoreCase(orderAmount)){
             throw new QwacklyException("Order amount does not match with the price of the product", ResponseStatus.FAILURE);
         }
     }

@@ -18,7 +18,7 @@ public class EmailScheduler {
     private EmailService emailService;
     private OrderProductService orderProductService;
 
-    private final static String SHOUT_OUT_DETAILS = "Please reply to this email with the details, what is the occassion and whom is this wish for and some more details for this request.";
+    private final static String SHOUT_OUT_DETAILS = "Please reply to this email with the following details: \n 1. What is the occassion \n 2. Whom is this wish for \n 3. Wish Content";
     private final static String BRAND_DETAILS = "Please reply to this email with the details of the brand to be promoted and your budget for the same. We will then connect you to the celebrity.";
 
     @Autowired

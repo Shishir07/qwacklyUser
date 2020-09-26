@@ -49,6 +49,9 @@ public class OrderController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    OrderPriceService orderPriceService;
+
     private static final String ADDED = "ADDED";
 
     private static final String PENNDING_PAYMENT = "PENDING_PAYMENT";
@@ -90,9 +93,11 @@ public class OrderController {
             orderId = orderIdgenerator.getUniqueOrderId();
             OrderEntity orderEntity = new OrderEntity(orderId, userEntity, OrderStatus.ADDED);
             OrderProductEntity orderProductEntity = new OrderProductEntity(ADDED, orderEntity, productEntity);
+            OrderPriceEntity orderPriceEntity = new OrderPriceEntity(orderEntity,productEntity.getPrice());
             try {
                 orderProductService.addOrderProduct(orderProductEntity);
                 orderService.addOrder(orderEntity);
+                orderPriceService.addOrderPrice(orderPriceEntity);
             } catch (Exception e) {
                 throw new QwacklyException(e.getMessage(), ResponseStatus.FAILURE);
             }
